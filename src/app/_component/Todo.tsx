@@ -2,7 +2,6 @@
 
 import { useRef, useState } from 'react'
 import TodoInsert from './TodoInsert'
-import TodoItem from './TodoItem'
 import TodoList from './TodoList'
 
 export type Todo = {
@@ -42,10 +41,16 @@ export default function Todo() {
     )
   }
 
+  const update = (id: string, newText: string) => {
+    setTodos(
+      todos.map((todo) => (todo.id == id ? { ...todo, text: newText } : todo)),
+    )
+  }
+
   return (
     <>
       <TodoInsert insert={insert} />
-      <TodoList todos={todos} toggle={toggle} remove={remove} />
+      <TodoList todos={todos} toggle={toggle} remove={remove} update={update} />
     </>
   )
 }
