@@ -13,7 +13,7 @@ export type Todo = {
 export default function Todo() {
   const [todos, setTodos] = useState<Todo[]>([])
 
-  const nextId = useRef(4)
+  const nextId = useRef(1)
 
   const insert = (text: string) => {
     const todo = {
@@ -34,17 +34,23 @@ export default function Todo() {
   }
 
   const toggle = (id: string) => {
-    setTodos(
-      todos.map((todo) =>
-        todo.id === id ? { ...todo, checked: !todo.checked } : todo,
-      ),
-    )
+    const targetIndex = todos.findIndex((todo) => todo.id === id)
+    if (targetIndex !== -1) {
+      const target = [...todos]
+      target[targetIndex].checked = !target[targetIndex].checked
+      setTodos(target)
+    }
   }
 
   const update = (id: string, newText: string) => {
-    setTodos(
-      todos.map((todo) => (todo.id == id ? { ...todo, text: newText } : todo)),
-    )
+    const targetIndex = todos.findIndex((todo) => todo.id === id)
+    console.log(targetIndex)
+    if (targetIndex !== -1) {
+      const next = [...todos]
+      next[targetIndex].text = newText
+      console.log(id, newText, next)
+      setTodos(next)
+    }
   }
 
   return (

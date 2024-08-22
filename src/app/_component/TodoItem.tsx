@@ -37,13 +37,13 @@ export default function TodoItem({ todo, remove, toggle, update }: Props) {
   useEffect(() => {
     if (isEditing && inputRef.current) {
       inputRef.current.focus() // 편집 모드로 변경된 후 input에 포커스 설정
-      console.log('aa')
     }
   }, [isEditing]) // isEditing 상태가 변경될 때마다 실행
 
   const saveHandler: MouseEventHandler<HTMLButtonElement> = (e) => {
     e.preventDefault()
     update(todo.id, newText)
+    console.log(todo.id, newText)
     setIsEditing(false)
   }
 
