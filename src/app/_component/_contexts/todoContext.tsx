@@ -51,15 +51,12 @@ export const TodosProvider = ({ children }: { children: ReactNode }) => {
   }
 
   const updataTodo = async (todo: Todo) => {
-    console.log('m/Todo', todo)
     const newTodo = await fetchUpdataTodo(todo)
-    console.log(newTodo)
     if (newTodo) {
       const targetIndex = todos.findIndex((todo) => todo.id === newTodo.id)
       if (targetIndex !== -1) {
         const next = [...todos]
         next[targetIndex] = newTodo
-        console.log(next)
         setTodos(next)
       }
     }
