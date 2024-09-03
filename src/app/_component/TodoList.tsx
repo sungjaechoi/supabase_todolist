@@ -1,23 +1,21 @@
-import { Todo } from './Todo'
+import { Todo } from '@/model/todos'
 import TodoItem from './TodoItem'
 
 type Props = {
   todos: Todo[]
-  remove: (id: string) => void
-  toggle: (id: string) => void
-  update: (id: string, text: string) => void
+  deleteTodo: (id: string) => void
+  updataTodo: (todo: Todo) => void
 }
 
-export default function TodoList({ todos, remove, toggle, update }: Props) {
+export default function TodoList({ todos, deleteTodo, updataTodo }: Props) {
   return (
     <div className="TodoList">
       {todos.map((todo) => (
         <TodoItem
           todo={todo}
           key={todo.id}
-          toggle={toggle}
-          remove={remove}
-          update={update}
+          deleteTodo={deleteTodo}
+          updataTodo={updataTodo}
         />
       ))}
     </div>

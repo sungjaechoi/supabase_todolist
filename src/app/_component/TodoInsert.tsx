@@ -3,10 +3,10 @@ import { useState } from 'react'
 import { MdAdd } from 'react-icons/md'
 
 type Props = {
-  insert: (text: string) => void
+  createTodo: (text: string) => void
 }
 
-export default function TodoInsert({ insert }: Props) {
+export default function TodoInsert({ createTodo }: Props) {
   const [value, setValue] = useState('')
   const [error, setError] = useState('')
 
@@ -23,7 +23,7 @@ export default function TodoInsert({ insert }: Props) {
       setError('할 일을 입력하세요.') // 에러 메시지 설정
       return
     }
-    insert(value)
+    createTodo(value)
     setValue('')
     setError('')
   }

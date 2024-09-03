@@ -7,25 +7,23 @@ import {
   MdOutlineCancel,
 } from 'react-icons/md'
 import { FaRegEdit, FaRegSave } from 'react-icons/fa'
-import { Todo } from './Todo'
 import {
   FormEventHandler,
   KeyboardEventHandler,
-  MouseEventHandler,
   useEffect,
   useRef,
   useState,
 } from 'react'
 import { clsx } from 'clsx'
+import { Todo } from '@/model/todos'
 
 type Props = {
   todo: Todo
-  remove: (id: string) => void
-  toggle: (id: string) => void
-  update: (id: string, text: string) => void
+  deleteTodo: (id: string) => void
+  updataTodo: (todo: Todo) => void
 }
 
-export default function TodoItem({ todo, remove, toggle, update }: Props) {
+export default function TodoItem({ todo, deleteTodo, updataTodo }: Props) {
   const [isEditing, setIsEditing] = useState(false)
   const [newText, setNewText] = useState(todo.text)
   const inputRef = useRef<HTMLInputElement>(null)
@@ -40,10 +38,10 @@ export default function TodoItem({ todo, remove, toggle, update }: Props) {
     }
   }, [isEditing]) // isEditing 상태가 변경될 때마다 실행
 
-  const saveHandler: MouseEventHandler<HTMLButtonElement> = (e) => {
-    e.preventDefault()
-    update(todo.id, newText)
-    console.log(todo.id, newText)
+  const saveHandler = async () => {
+    const copy = JSON.parse(JSON.stringify(todo))
+    const next = { ...copy, text: newText, checked: copy.checked }
+    await updataTodo(next)
     setIsEditing(false)
   }
 
@@ -52,10 +50,18 @@ export default function TodoItem({ todo, remove, toggle, update }: Props) {
     setIsEditing(false)
   }
 
-  const formSubmitHandler: FormEventHandler<HTMLFormElement> = (e) => {
+  const formSubmitHandler: FormEventHandler<HTMLFormElement> = async (e) => {
     e.preventDefault()
-    update(todo.id, newText)
+    const copy = JSON.parse(JSON.stringify(todo))
+    const next = { ...copy, text: newText, checked: copy.checked }
+    await updataTodo(next)
     setIsEditing(false)
+  }
+
+  const toggleHandler = async () => {
+    const copy = JSON.parse(JSON.stringify(todo))
+    const next = { ...copy, text: copy.text, checked: !todo.checked }
+    await updataTodo(next)
   }
 
   const keyDownCancelHandler: KeyboardEventHandler<HTMLInputElement> = (e) => {
@@ -72,9 +78,7 @@ export default function TodoItem({ todo, remove, toggle, update }: Props) {
           id={`check_${todo.id}`}
           type="checkbox"
           checked={todo.checked}
-          onChange={() => {
-            toggle(todo.id)
-          }}
+          onChange={toggleHandler}
         />
         <label htmlFor={`check_${todo.id}`} className="flex flex-auto">
           {todo.checked ? (
@@ -121,7 +125,7 @@ export default function TodoItem({ todo, remove, toggle, update }: Props) {
         <button
           type="button"
           onClick={() => {
-            remove(todo.id)
+            deleteTodo(todo.id)
           }}
         >
           <MdDelete className="w-[30px] h-[30px] mr-1" />
