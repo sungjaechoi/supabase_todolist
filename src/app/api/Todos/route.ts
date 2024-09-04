@@ -1,19 +1,15 @@
 import {
   serviceCreateTood,
   serviceDeleteTodo,
-  serviceGetTodos,
   serviceUpdataTodo,
 } from '@/app/_service/serviceTodos'
-
-export async function GET() {
-  const response = await serviceGetTodos()
-  return Response.json({ message: 'ok', data: response })
-}
 
 export async function POST(request: Request) {
   const requstBody = await request.json()
   const text = requstBody.text
-  const response = await serviceCreateTood(text)
+  const userId = requstBody.userId
+  console.log(requstBody)
+  const response = await serviceCreateTood(userId, text)
   return Response.json({ message: 'ok', data: response })
 }
 

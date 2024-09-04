@@ -3,15 +3,22 @@ import { PrismaClient } from '@prisma/client'
 
 const prisma = new PrismaClient()
 
-export async function serviceGetTodos() {
-  const response = await prisma.todos.findMany()
+export async function serviceGetTodos(userId: string) {
+  const response = await prisma.todos.findMany({
+    where: {
+      userId: userId,
+    },
+  })
 
   return response
 }
 
-export async function serviceCreateTood(text: string) {
+export async function serviceCreateTood(userId: string, text: string) {
   const response = await prisma.todos.create({
-    data: { text },
+    data: {
+      userId: userId,
+      text: text,
+    },
   })
 
   return response

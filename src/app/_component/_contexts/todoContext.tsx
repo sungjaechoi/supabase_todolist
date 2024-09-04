@@ -15,6 +15,7 @@ import React, {
   useEffect,
   useState,
 } from 'react'
+import { createClient } from '@/utils/supabase/client'
 
 // Context 생성
 const TodosContext = createContext<{
@@ -32,21 +33,28 @@ const TodosContext = createContext<{
 // 2. Provider 컴포넌트 작성
 export const TodosProvider = ({ children }: { children: ReactNode }) => {
   const [todos, setTodos] = useState<Todo[]>([])
-
+  const client = createClient()
   useEffect(() => {
     const getTodos = async () => {
-      const todos = await fetchGetTodos()
-      if (todos) {
-        setTodos(todos)
+      const userId = (await client.auth.getUser()).data.user?.id
+      if (userId) {
+        const todos = await fetchGetTodos(userId)
+
+        if (todos) {
+          setTodos(todos)
+        }
       }
     }
     getTodos()
   }, [])
 
   const createTodo = async (text: string) => {
-    const todo = await fetchCreateTodo(text)
-    if (todo) {
-      setTodos([...todos, todo])
+    const userId = (await client.auth.getUser()).data.user?.id
+    if (userId) {
+      const todo = await fetchCreateTodo(userId, text)
+      if (todo) {
+        setTodos([...todos, todo])
+      }
     }
   }
 

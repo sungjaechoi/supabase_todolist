@@ -1,9 +1,8 @@
 import { Todo } from '@/model/todos'
-import { json } from 'stream/consumers'
 
-export async function fetchGetTodos() {
+export async function fetchGetTodos(userId: string) {
   try {
-    const response = await fetch('/api/Todos')
+    const response = await fetch(`/api/User/Todos/${userId}`)
 
     if (!response.ok) {
       throw Error(`fetch Error:${response.status}`)
@@ -18,11 +17,11 @@ export async function fetchGetTodos() {
   }
 }
 
-export async function fetchCreateTodo(text: string) {
+export async function fetchCreateTodo(userId: string, text: string) {
   try {
     const response = await fetch('/api/Todos', {
       method: 'POST',
-      body: JSON.stringify({ text }),
+      body: JSON.stringify({ userId, text }),
     })
 
     if (!response.ok) {
