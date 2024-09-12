@@ -1,15 +1,8 @@
 'use client'
 
-import { Todo } from '@/model/todos'
+import { fetchGetUserInfo } from '@/app/_lib/fetchUserInfo'
 import { createClient } from '@/utils/supabase/client'
-
-// console.log(
-//   'createClient',
-//   client.auth.getUser().then((res) => {
-//     console.log(res)
-//     // client.auth.signOut()
-//   }),
-// )
+import { users } from '@prisma/client'
 
 import React, {
   ReactNode,
@@ -20,14 +13,32 @@ import React, {
 } from 'react'
 
 // Context 생성
-const client = createClient()
-const UserContext = createContext<{}>({})
+
+const UserContext = createContext<{
+  user: users | null
+}>({ user: null })
 
 // 2. Provider 컴포넌트 작성
 export const UserProvider = ({ children }: { children: ReactNode }) => {
-  // const [todos, setTodos] = useState<Todo[]>([])
+  const [user, setUser] = useState<users | null>(null)
+  const client = createClient()
 
-  return <UserContext.Provider value={{}}>{children}</UserContext.Provider>
+  useEffect(() => {
+    const getUser = async () => {
+      const id = (await client.auth.getUser()).data.user?.id
+      if (id) {
+        const user = (await fetchGetUserInfo(id)) as users | undefined
+        if (user) {
+          setUser(user)
+        }
+      }
+    }
+    getUser()
+  }, [client.auth])
+
+  return (
+    <UserContext.Provider value={{ user }}>{children}</UserContext.Provider>
+  )
 }
 
 // 3. Custom Hook 작성 (선택 사항)
