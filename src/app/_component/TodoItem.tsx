@@ -15,12 +15,12 @@ import {
   useState,
 } from 'react'
 import { clsx } from 'clsx'
-import { Todo } from '@/model/todos'
+import { todo } from '@prisma/client'
 
 type Props = {
-  todo: Todo
+  todo: todo
   deleteTodo: (id: string) => void
-  updataTodo: (todo: Todo) => void
+  updataTodo: (todo: todo) => void
 }
 
 export default function TodoItem({ todo, deleteTodo, updataTodo }: Props) {
@@ -77,7 +77,7 @@ export default function TodoItem({ todo, deleteTodo, updataTodo }: Props) {
         <input
           id={`check_${todo.id}`}
           type="checkbox"
-          checked={todo.checked}
+          checked={todo.checked as boolean}
           onChange={toggleHandler}
         />
         <label htmlFor={`check_${todo.id}`} className="flex flex-auto">
@@ -89,7 +89,7 @@ export default function TodoItem({ todo, deleteTodo, updataTodo }: Props) {
           {isEditing ? (
             <input
               type="text"
-              value={newText}
+              value={newText as string}
               ref={inputRef}
               onChange={(e) => setNewText(e.target.value)}
               onKeyDown={keyDownCancelHandler}

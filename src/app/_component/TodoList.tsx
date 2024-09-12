@@ -1,10 +1,10 @@
-import { Todo } from '@/model/todos'
+import { todo } from '@prisma/client'
 import TodoItem from './TodoItem'
 
 type Props = {
-  todos: Todo[]
+  todos: todo[]
   deleteTodo: (id: string) => void
-  updataTodo: (todo: Todo) => void
+  updataTodo: (todo: todo) => void
 }
 
 export default function TodoList({ todos, deleteTodo, updataTodo }: Props) {

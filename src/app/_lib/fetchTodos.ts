@@ -1,15 +1,15 @@
-import { Todo } from '@/model/todos'
+import { Prisma, todo } from '@prisma/client'
 
 export async function fetchGetTodos(userId: string) {
   try {
-    const response = await fetch(`/api/User/Todos/${userId}`)
+    const response = await fetch(`/api/users/todo/${userId}`)
 
     if (!response.ok) {
       throw Error(`fetch Error:${response.status}`)
     }
 
     const responseObj = await response.json()
-    const todos: Todo[] = responseObj.data
+    const todos: todo[] = responseObj.data
 
     return todos
   } catch (error) {
@@ -19,7 +19,7 @@ export async function fetchGetTodos(userId: string) {
 
 export async function fetchCreateTodo(userId: string, text: string) {
   try {
-    const response = await fetch('/api/Todos', {
+    const response = await fetch('/api/todo', {
       method: 'POST',
       body: JSON.stringify({ userId, text }),
     })
@@ -30,7 +30,7 @@ export async function fetchCreateTodo(userId: string, text: string) {
 
     const responseObj = await response.json()
 
-    const todo: Todo = responseObj.data
+    const todo: todo = responseObj.data
 
     return todo
   } catch (error) {
@@ -38,9 +38,9 @@ export async function fetchCreateTodo(userId: string, text: string) {
   }
 }
 
-export async function fetchUpdataTodo(data: Todo) {
+export async function fetchUpdataTodo(data: Prisma.todoUpdateInput) {
   try {
-    const response = await fetch('/api/Todos', {
+    const response = await fetch('/api/todo', {
       method: 'PATCH',
       body: JSON.stringify(data),
     })
@@ -51,7 +51,7 @@ export async function fetchUpdataTodo(data: Todo) {
 
     const resposeObj = await response.json()
 
-    const todo: Todo = resposeObj.data
+    const todo: todo = resposeObj.data
 
     return todo
   } catch (error) {
@@ -61,7 +61,7 @@ export async function fetchUpdataTodo(data: Todo) {
 
 export async function fetchDeleteTodo(id: string) {
   try {
-    const response = await fetch('/api/Todos', {
+    const response = await fetch('/api/todo', {
       method: 'DELETE',
       body: JSON.stringify({ id }),
     })

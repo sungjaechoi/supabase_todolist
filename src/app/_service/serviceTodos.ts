@@ -1,12 +1,11 @@
-import { Todo } from '@/model/todos'
-import { PrismaClient } from '@prisma/client'
+import { PrismaClient, todo } from '@prisma/client'
 
 const prisma = new PrismaClient()
 
 export async function serviceGetTodos(userId: string) {
-  const response = await prisma.todos.findMany({
+  const response = await prisma.todo.findMany({
     where: {
-      userId: userId,
+      userld: userId,
     },
   })
 
@@ -14,9 +13,9 @@ export async function serviceGetTodos(userId: string) {
 }
 
 export async function serviceCreateTood(userId: string, text: string) {
-  const response = await prisma.todos.create({
+  const response = await prisma.todo.create({
     data: {
-      userId: userId,
+      userld: userId,
       text: text,
     },
   })
@@ -25,15 +24,15 @@ export async function serviceCreateTood(userId: string, text: string) {
 }
 
 export async function serviceDeleteTodo(id: string) {
-  const response = await prisma.todos.delete({
+  const response = await prisma.todo.delete({
     where: { id },
   })
 
   return response
 }
 
-export async function serviceUpdataTodo(todo: Todo) {
-  const response = await prisma.todos.update({
+export async function serviceUpdataTodo(todo: todo) {
+  const response = await prisma.todo.update({
     where: { id: todo.id },
     data: todo,
   })

@@ -1,6 +1,5 @@
 'use client'
 
-import { useRef, useState } from 'react'
 import TodoInsert from './TodoInsert'
 import TodoList from './TodoList'
 import { useTodosContext } from './_contexts/todoContext'

@@ -8,7 +8,6 @@ export async function POST(request: Request) {
   const requstBody = await request.json()
   const text = requstBody.text
   const userId = requstBody.userId
-  console.log(requstBody)
   const response = await serviceCreateTood(userId, text)
   return Response.json({ message: 'ok', data: response })
 }

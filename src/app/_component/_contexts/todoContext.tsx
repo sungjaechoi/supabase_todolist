@@ -6,7 +6,6 @@ import {
   fetchGetTodos,
   fetchUpdataTodo,
 } from '@/app/_lib/fetchTodos'
-import { Todo } from '@/model/todos'
 // 1. Context 생성
 import React, {
   ReactNode,
@@ -15,42 +14,44 @@ import React, {
   useEffect,
   useState,
 } from 'react'
-import { createClient } from '@/utils/supabase/client'
+import { useUserContext } from './userContext'
+import { Prisma, todo } from '@prisma/client'
 
 // Context 생성
 const TodosContext = createContext<{
-  todos: Todo[]
+  todos: todo[]
   createTodo: (text: string) => void
-  updataTodo: (todo: Todo) => void
+  updataTodo: (todo: Prisma.todoUpdateInput) => void
   deleteTodo: (id: string) => void
 }>({
   todos: [],
   createTodo: (text: string) => {},
-  updataTodo: (todo: Todo) => {},
+  updataTodo: (todo: Prisma.todoUpdateInput) => {},
   deleteTodo: (id: string) => {},
 })
 
 // 2. Provider 컴포넌트 작성
 export const TodosProvider = ({ children }: { children: ReactNode }) => {
-  const [todos, setTodos] = useState<Todo[]>([])
-  const client = createClient()
+  const { user } = useUserContext()
+  const [todos, setTodos] = useState<todo[]>([])
+
   useEffect(() => {
     const getTodos = async () => {
-      const userId = (await client.auth.getUser()).data.user?.id
-      if (userId) {
+      if (user) {
+        const userId = user.id
         const todos = await fetchGetTodos(userId)
-
         if (todos) {
           setTodos(todos)
         }
       }
     }
     getTodos()
-  }, [])
+  }, [user])
 
   const createTodo = async (text: string) => {
-    const userId = (await client.auth.getUser()).data.user?.id
-    if (userId) {
+    if (user) {
+      const userId = user.id
+      console.log('userId', userId)
       const todo = await fetchCreateTodo(userId, text)
       if (todo) {
         setTodos([...todos, todo])
@@ -58,7 +59,7 @@ export const TodosProvider = ({ children }: { children: ReactNode }) => {
     }
   }
 
-  const updataTodo = async (todo: Todo) => {
+  const updataTodo = async (todo: Prisma.todoUpdateInput) => {
     const newTodo = await fetchUpdataTodo(todo)
     if (newTodo) {
       const targetIndex = todos.findIndex((todo) => todo.id === newTodo.id)
