@@ -1,37 +1,33 @@
 'use client'
 
 import Link from 'next/link'
-import { ChangeEventHandler, useState } from 'react'
+import { useState } from 'react'
+import { FormState, UseFormRegister, UseFormWatch } from 'react-hook-form'
+import { FormValues } from '../page'
+import DuplicationMessage from './DuplicationMessage'
+import EmailErrorMessage from './EmailErrorMessage'
 
 type Props = {
-  email: string
-  validateEmail: (email: string) => void
-  emailDuplicationMessage: string
+  register: UseFormRegister<FormValues>
+  formState: FormState<FormValues>
+  watch: UseFormWatch<FormValues>
   emailDuplicationCheck: (email: string) => void
-  isEmailDuplication: boolean
-  isEmailValdateCompleate: boolean
-  emailError: string
+  isDuplicationPass: boolean
+  emailDuplicationMessage: string
+  setIsDuplicationPass: (boolean: boolean) => void
 }
 
 export default function EmailForm({
-  email,
-  validateEmail,
+  register,
+  watch,
+  formState: { errors, touchedFields },
   emailDuplicationCheck,
-  isEmailDuplication,
-  isEmailValdateCompleate,
-  emailError,
-  emailDuplicationMessage,
+  isDuplicationPass,
+  setIsDuplicationPass,
 }: Props) {
-  const [isBlur, setIsBlur] = useState(false)
-
-  const onChange: ChangeEventHandler<HTMLInputElement> = (e) => {
-    validateEmail(e.target.value)
-  }
-
-  const onBlur = () => {
-    setIsBlur(true)
-    validateEmail(email)
-  }
+  const emailValue = watch('email')
+  const [isKeypress, setIsKeypress] = useState(false)
+  const [isChecked, setIsChecked] = useState(false)
 
   return (
     <>
@@ -43,52 +39,52 @@ export default function EmailForm({
           <input
             className="h-[30px] w-full flex-auto px-2"
             placeholder="username@email"
-            id="email"
-            name="email"
+            onKeyUp={() => {
+              if (!isKeypress) setIsKeypress(true)
+            }}
             type="email"
-            value={email}
-            onChange={onChange}
-            onBlur={onBlur}
-            required
+            {...register('email', {
+              required: '이메일은 필수 입력 항목입니다.',
+              pattern: {
+                value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                message: '올바른 이메일 형식이 아닙니다.',
+              },
+              onChange: () => {
+                setIsDuplicationPass(false)
+                setIsChecked(false)
+              },
+            })}
           />
           <button
             type="button"
-            className="flex-initial w-[100px] h-[30px] px-1 border border-gray-500 rounded-lg border-solid"
-            disabled={isEmailValdateCompleate}
+            className={`${
+              isKeypress && errors.email === undefined
+                ? 'bg-green-500'
+                : 'bg-red-500'
+            } flex-initial w-[100px] h-[30px] px-1 border border-gray-500 rounded-lg border-solid`}
+            disabled={errors.email !== undefined}
             onClick={async () => {
-              emailDuplicationCheck(email)
+              emailDuplicationCheck(emailValue)
+              setIsChecked(true)
             }}
           >
             중복 검사
           </button>
         </div>
       </div>
-      {emailError && isBlur && (
-        <span className="flex justify-start w-full mt-[5px] text-sm text-red-500">
-          {emailError}
-        </span>
-      )}
-      {emailDuplicationMessage && (
+      <EmailErrorMessage touchedFields={touchedFields} errors={errors} />
+      <DuplicationMessage isDuplication={isChecked && !isDuplicationPass} />
+      {/* {emailDuplicationMessage && (
         <span className="flex justify-start w-full mt-[5px] text-sm text-blue-500">
           {emailDuplicationMessage}
         </span>
+      )} */}
+
+      {isDuplicationPass && (
+        <span className="flex justify-start w-full mt-[5px] text-sm text-blue-500">
+          사용 가능한 이메일 입니다.
+        </span>
       )}
-      {isEmailDuplication ? (
-        <div className="flex flex-col gap-2">
-          <span className="flex justify-center items-center h-[30px] text-center text-red-500 ">
-            이미 사용중인 이메일 입니다.
-          </span>
-          <span className="flex justify-center items-center h-[30px] text-center text-blue-500 ">
-            회원 이시라면 로그인 화면으로 돌아가세요.
-          </span>
-          <Link
-            className="h-[40px] flex justify-center items-center border border-gray-300 rounded-lg border-solid"
-            href={'auth/login'}
-          >
-            Go Login
-          </Link>
-        </div>
-      ) : null}
     </>
   )
 }

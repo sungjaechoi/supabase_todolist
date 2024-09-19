@@ -1,40 +1,21 @@
 'use client'
 
 import { ChangeEventHandler, useState } from 'react'
+import { FormState, UseFormRegister, UseFormWatch } from 'react-hook-form'
+import { FormValues } from '../page'
 
 type Props = {
-  password: string
-  passwordReType: string
-  validatePassword: (password: string, passwordReType: string) => void
-  passwordError: string
+  register: UseFormRegister<FormValues>
+  formState: FormState<FormValues>
+  watch: UseFormWatch<FormValues>
 }
 
 export default function PasswordForm({
-  password,
-  passwordReType,
-  validatePassword,
-  passwordError,
+  register,
+  formState: { errors, touchedFields, isValid },
+  watch,
 }: Props) {
-  const [isPasswordBlur, setIsPasswordBlur] = useState(false)
-  const [isPasswordCheckBlur, setIsPasswordCheckBlur] = useState(false)
-
-  const onChangePassword: ChangeEventHandler<HTMLInputElement> = (e) => {
-    validatePassword(e.target.value, passwordReType)
-  }
-
-  const onChangePasswordCheck: ChangeEventHandler<HTMLInputElement> = (e) => {
-    validatePassword(password, e.target.value)
-  }
-
-  const onBlurPassword = () => {
-    setIsPasswordBlur(true)
-    validatePassword(password, passwordReType)
-  }
-
-  const onBlurPasswordCheck = () => {
-    setIsPasswordCheckBlur(true)
-    validatePassword(password, passwordReType)
-  }
+  const password = watch('password')
 
   return (
     <>
@@ -44,34 +25,38 @@ export default function PasswordForm({
         </label>
         <input
           className="w-full h-[30px] flex-auto px-2"
-          placeholder="password"
-          id="password"
-          name="password"
           type="password"
-          value={password}
-          onBlur={onBlurPassword}
-          onChange={onChangePassword}
-          required
+          placeholder="password"
+          {...register('password', {
+            required: '비밀번호는 필수 입력 항목 입니다.',
+            minLength: {
+              value: 6,
+              message: '비밀번호는 6자 이상이어야 합니다.',
+            },
+          })}
         />
       </div>
       <div className="flex flex-col justify-center items-center p-2 border border-gray-300 rounded-lg">
-        <label htmlFor="password-retype">
+        <label htmlFor="password">
           <span className="blind">password 확인</span>
         </label>
         <input
           className="w-full h-[30px] flex-auto px-2"
-          placeholder="retype password"
-          id="password-retype"
-          name="password-retype"
           type="password"
-          value={passwordReType}
-          onChange={onChangePasswordCheck}
-          onBlur={onBlurPasswordCheck}
-          required
+          placeholder="retype password"
+          {...register('passwordReType', {
+            validate: (valus) =>
+              valus === password || '비밀번호가 일치하지 않습니다.',
+          })}
         />
-        {passwordError && isPasswordBlur && isPasswordCheckBlur && (
+        {touchedFields.password && errors.password && (
           <span className="flex justify-start w-full mt-[5px] text-sm text-red-500">
-            {passwordError}
+            {errors.password.message}
+          </span>
+        )}
+        {touchedFields.passwordReType && errors.passwordReType && (
+          <span className="flex justify-start w-full mt-[5px] text-sm text-red-500">
+            {errors.passwordReType.message}
           </span>
         )}
       </div>

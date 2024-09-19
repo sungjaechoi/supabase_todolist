@@ -1,17 +1,16 @@
 'use client'
 
+import { UseFormRegister } from 'react-hook-form'
+import { FormValues } from '../page'
+
 type Props = {
-  selectedGender: string
-  selectGenderHandler: (gender: string) => void
+  register: UseFormRegister<FormValues>
 }
 
-export default function GenderForm({
-  selectedGender,
-  selectGenderHandler,
-}: Props) {
-  const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    selectGenderHandler(event.target.value)
-  }
+export default function GenderForm({ register }: Props) {
+  // const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  //   selectGenderHandler(event.target.value)
+  // }
 
   return (
     <div className="flex justify-center h-[40px] border border-gray-300 rounded-lg">
@@ -19,13 +18,11 @@ export default function GenderForm({
         <input
           className="peer absolute left-0 top-0 w-full h-full"
           placeholder="gender"
+          {...register('gender')}
           id="male"
           name="gender"
           type="radio"
           value="male"
-          checked={selectedGender === 'male'}
-          onChange={onChange}
-          required
         />
         <label
           className="w-full h-[40px] flex justify-center items-center rounded-lg cursor-pointer transition-colors duration-300 peer-checked:bg-gray-400"
@@ -38,13 +35,11 @@ export default function GenderForm({
         <input
           className="peer absolute left-0 top-0 w-full h-full"
           placeholder="gender"
+          {...register('gender')}
           id="female"
           name="gender"
           type="radio"
           value="female"
-          checked={selectedGender === 'female'}
-          onChange={onChange}
-          required
         />
         <label
           className="w-full h-[40px] flex justify-center items-center rounded-lg cursor-pointer transition-colors duration-300 peer-checked:bg-gray-400"

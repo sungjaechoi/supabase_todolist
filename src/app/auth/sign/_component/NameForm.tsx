@@ -1,29 +1,17 @@
 'use client'
 
-import { ChangeEventHandler, useState } from 'react'
+import { FormState, UseFormRegister } from 'react-hook-form'
+import { FormValues } from '../page'
 
 type Props = {
-  userName: string
-  userNameError: string
-  validateUserName: (name: string) => void
+  register: UseFormRegister<FormValues>
+  formState: FormState<FormValues>
 }
 
 export default function NameForm({
-  userName,
-  userNameError,
-  validateUserName,
+  register,
+  formState: { errors, touchedFields },
 }: Props) {
-  const [isBlur, setIsBlur] = useState(false)
-
-  const onChange: ChangeEventHandler<HTMLInputElement> = (e) => {
-    validateUserName(e.target.value)
-  }
-
-  const onBlur = () => {
-    setIsBlur(true)
-    validateUserName(userName)
-  }
-
   return (
     <>
       <div className="flex flex-col justify-center items-center p-2 border border-gray-300 rounded-lg">
@@ -33,17 +21,18 @@ export default function NameForm({
         <input
           className="w-full h-[30px] flex-auto px-2"
           placeholder="name / Nick Name"
-          id="name"
-          name="name"
           type="text"
-          value={userName}
-          onChange={onChange}
-          onBlur={onBlur}
-          required
+          {...register('name', {
+            required: '이름은 필수 항목 입니다.',
+            validate: (value) =>
+              value.length < 3 ||
+              value.length >= 8 ||
+              '이름은 최소 3자 이상 8자 미만 입니다.',
+          })}
         />
-        {userNameError && isBlur && (
+        {touchedFields.name && errors.name && (
           <span className="flex justify-start w-full mt-[5px] text-sm text-red-500">
-            {userNameError}
+            {errors.name.message}
           </span>
         )}
       </div>
