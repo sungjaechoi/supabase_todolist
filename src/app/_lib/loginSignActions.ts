@@ -3,6 +3,7 @@
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 import { createClient } from '@/utils/supabase/server'
+import { FormValues } from '@/model/formValues'
 
 export async function login(formData: FormData) {
   const supabase = createClient()
@@ -24,31 +25,24 @@ export async function login(formData: FormData) {
   redirect('/')
 }
 
-export async function signup(formData: FormData) {
+export async function signup(signupData: FormValues) {
   const supabase = createClient()
 
   // type-casting here for convenience
   // in practice, you should validate your inputs
 
   const data = {
-    email: formData.get('email') as string,
-    password: formData.get('password') as string,
+    email: signupData.email,
+    password: signupData.password,
     options: {
       data: {
-        name: formData.get('name') as string, // name을 user_metadata로 추가
-        gender: formData.get('gender') as string,
+        name: signupData.name, // name을 user_metadata로 추가
+        gender: signupData.gender,
       },
     },
   }
-  if (
-    !data.email ||
-    !data.password ||
-    !data.options.data.name ||
-    !data.options.data.gender
-  ) {
-    console.log('필수 입력 값이 누락되었습니다.')
-    return
-  }
+
+  console.log(data)
 
   const { error } = await supabase.auth.signUp(data)
 
