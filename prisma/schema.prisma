@@ -342,10 +342,19 @@ model userinfo {
 model todo {
   id         String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   userld     String?  @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  categorie  String?  @default("general")
+  categorie  String?  @default("all")
   text       String?
   checked    Boolean? @default(false)
   created_at DateTime @default(now()) @db.Timestamptz(6)
+
+  @@schema("public")
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model userCategories {
+  id     String  @id(map: "categories_pkey") @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name   String?
+  userId String? @default(dbgenerated("gen_random_uuid()")) @db.Uuid
 
   @@schema("public")
 }
