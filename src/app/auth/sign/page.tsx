@@ -1,27 +1,24 @@
 'use client'
 import { useEffect, useState } from 'react'
 import { signup } from '../../_lib/loginSignActions'
-import EmailForm from './_component/EmailForm'
-import PasswordForm from './_component/PasswordForm'
-import NameForm from './_component/NameForm'
-import GenderForm from './_component/GenderForm'
 import { fetchAllUserInfo } from '@/app/_lib/fetchAllUserInfo'
 import { userinfo } from '@prisma/client'
-import { UseFormReturn, useForm } from 'react-hook-form'
-
-export type FormValues = {
-  email: string
-  password: string
-  passwordReType: string
-  name: string
-  gender: string
-}
+import { UseFormReturn, useForm, FormState } from 'react-hook-form'
+import Input from '@/app/_component/Input'
+import DuplicationMessage from './_component/DuplicationMessage'
+import DuplicationPassMessage from './_component/DuplicationPassMessage'
+import { FaRegCheckCircle } from 'react-icons/fa'
+import { GiCancel } from 'react-icons/gi'
+import { FormValues } from '../../../model/formValues'
+import InputRadio from '@/app/_component/inputRadio'
+import InputErrorMessage from '@/app/_component/inputErrorMessage'
 
 export default function SignUpPage() {
   const [userList, setUserList] = useState<userinfo[]>([])
 
   const [isDuplicationPass, setIsDuplicationPass] = useState(false)
-  const [emailDuplicationMessage, setEmailDuplicationMessage] = useState('')
+  const [isKeypress, setIsKeypress] = useState(false)
+  const [isChecked, setIsChecked] = useState(false)
 
   const {
     register,
@@ -71,10 +68,6 @@ export default function SignUpPage() {
   }: // 에러 지우기
   UseFormReturn<FormValues> = useForm<FormValues>({
     defaultValues: {
-      email: '',
-      name: '',
-      password: '',
-      passwordReType: '',
       gender: 'male',
     },
     mode: 'onChange',
@@ -93,20 +86,16 @@ export default function SignUpPage() {
 
     if (hasEmail) {
       setIsDuplicationPass(false)
-      // setEmailDuplicationMessage('')
     } else {
       setIsDuplicationPass(true)
-      // setEmailDuplicationMessage('사용 가능한 이메일 입니다.')
     }
   }
 
   const onSubmit = async (data: FormValues) => {
     await signup(data)
   }
-
-  // const selectGenderHandler = (gender: string) => {
-  //   setSelectedGender(gender)
-  // }
+  const emailValue = watch('email')
+  const password = watch('password')
 
   return (
     <div className="w-full h-[70%] min-h-[800px] flex items-center justify-center">
@@ -116,26 +105,118 @@ export default function SignUpPage() {
           className="flex flex-col w-[400px] gap-3"
           onSubmit={handleSubmit(onSubmit)}
         >
-          <EmailForm
-            register={register}
-            formState={formState}
-            watch={watch}
-            emailDuplicationCheck={emailDuplicationCheck}
-            isDuplicationPass={isDuplicationPass}
-            emailDuplicationMessage={emailDuplicationMessage}
-            setIsDuplicationPass={setIsDuplicationPass}
-          />
-          <PasswordForm
-            register={register}
-            formState={formState}
-            watch={watch}
-          />
-          <NameForm register={register} formState={formState} />
-          <GenderForm register={register} />
+          <div className="flex flex-col justify-center items-center p-2 border border-gray-300 rounded-lg relative">
+            <Input
+              inputName="email"
+              inputType="email"
+              inputValue={emailValue}
+              placeholder="이메일을 입력해 주세요"
+              register={register}
+              fieldoptions={{
+                required: '이메일은 필수 입력 항목입니다.',
+                pattern: {
+                  value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                  message: '올바른 이메일 형식이 아닙니다.',
+                },
+                onChange: () => {
+                  setIsDuplicationPass(false)
+                  setIsChecked(false)
+                  if (!isKeypress) setIsKeypress(true)
+                },
+              }}
+            />
+            {!formState.errors.email && isKeypress && (
+              <button
+                type="button"
+                className={`flex-auto w-full h-[30px] px-2 mt-2 bg-gray-400 rounded-lg text-white text-lg`}
+                onClick={async () => {
+                  emailDuplicationCheck(emailValue)
+                  setIsChecked(true)
+                  setIsKeypress(false)
+                }}
+              >
+                email 중복 확인
+              </button>
+            )}
+            <InputErrorMessage inputName="email" formState={formState} />
+            <DuplicationMessage
+              isDuplication={isChecked && !isDuplicationPass}
+            />
+            <DuplicationPassMessage isDuplicationPass={isDuplicationPass} />
+            {isDuplicationPass ? (
+              <FaRegCheckCircle className="absolute top-4 right-4 fill-green-500" />
+            ) : (
+              <GiCancel className="absolute top-4 right-4 fill-red-500" />
+            )}
+          </div>
+          <div className="flex flex-col justify-center items-center p-2 border border-gray-300 rounded-lg">
+            <Input
+              inputName="password"
+              inputType="password"
+              inputValue={password}
+              placeholder="비밀번호를 입력해주세요"
+              register={register}
+              fieldoptions={{
+                required: '비밀번호는 필수 입력 값입니다.',
+              }}
+            />
+          </div>
+          <div className="flex flex-col justify-center items-center p-2 border border-gray-300 rounded-lg">
+            <Input
+              inputName="passwordReType"
+              inputType="password"
+              placeholder="비밀번호 확인"
+              register={register}
+              fieldoptions={{
+                required: '비밀번호는 필수 입력 값입니다.',
+                minLength: {
+                  value: 6,
+                  message: '비밀번호는 6자 이상이어야 합니다.',
+                },
+                validate: (valus) =>
+                  valus === password || '비밀번호가 일치하지 않습니다.',
+              }}
+            />
+            <InputErrorMessage inputName="password" formState={formState} />
+            <InputErrorMessage
+              inputName="passwordReType"
+              formState={formState}
+            />
+          </div>
+          <div className="flex flex-col justify-center items-center p-2 border border-gray-300 rounded-lg">
+            <Input
+              inputName="name"
+              inputType="text"
+              placeholder="이름 또는 별칭을 입력해주세요"
+              register={register}
+              fieldoptions={{
+                required: '이름은 필수 항목 입니다.',
+                validate: (value) =>
+                  value.length < 3 || value.length >= 8
+                    ? '이름은 최소 3자이상 최대 8자 미만 입니다.'
+                    : undefined,
+              }}
+            />
+            <InputErrorMessage inputName="name" formState={formState} />
+          </div>
+          <div className="flex justify-center h-[40px] border border-gray-300 rounded-lg">
+            <InputRadio
+              inputName="gender"
+              inputType="radio"
+              radioValues={['male', 'female']}
+              register={register}
+              fieldoptions={{
+                required: '성별을 선택해주세요',
+              }}
+            />
+          </div>
           <button
-            className="h-[50px] mt-[10px] border border-gray-300 rounded-lg border-solid font-semibold"
+            className={`${
+              formState.isValid && isDuplicationPass
+                ? 'bg-gray-400 text-white font-semibold'
+                : 'bg-white'
+            } h-[50px] mt-[10px] border border-gray-300 rounded-lg border-solid font-semibold`}
             type="submit"
-            //ture : 중복             ture : 통과
             disabled={!formState.isValid || !isDuplicationPass}
           >
             가입하기

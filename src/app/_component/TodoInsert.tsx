@@ -1,50 +1,50 @@
 'use client'
-import { useState } from 'react'
 import { MdAdd } from 'react-icons/md'
+import Input from './Input'
+import { useForm, UseFormReturn } from 'react-hook-form'
+import { FormValues } from '@/model/formValues'
+import InputErrorMessage from './inputErrorMessage'
 
 type Props = {
   createTodo: (text: string) => void
 }
 
 export default function TodoInsert({ createTodo }: Props) {
-  const [value, setValue] = useState('')
-  const [error, setError] = useState('')
+  const {
+    register,
+    handleSubmit,
+    formState,
+    watch,
+    reset,
+  }: UseFormReturn<FormValues> = useForm<FormValues>({
+    mode: 'onChange',
+  })
 
-  const change = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setValue(e.target.value)
-    if (e.target.value.trim() !== '') {
-      setError('')
-    }
+  const inputValue = watch('todoInsert')
+
+  const onSubmit = () => {
+    createTodo(inputValue)
+    reset({ todoInsert: '' })
   }
 
-  const click = (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault()
-    if (value.trim() === '') {
-      setError('할 일을 입력하세요.') // 에러 메시지 설정
-      return
-    }
-    createTodo(value)
-    setValue('')
-    setError('')
-  }
   return (
     <div className="px-3 py-2 mb-5 border border-gray-300 rounded-lg relative">
-      <form className="flex w-[600px]">
-        <input
-          className="h-[30px] flex-auto"
-          placeholder="할 일을 입력하세요"
-          value={value}
-          onChange={change}
+      <form className="flex w-[600px]" onSubmit={handleSubmit(onSubmit)}>
+        <Input
+          inputName="todoInsert"
+          inputType="text"
+          register={register}
+          inputValue={inputValue}
+          placeholder="할 일을 입력하세요 "
+          fieldoptions={{
+            required: '할 일을 입력 하세요',
+          }}
         />
-        <button type="submit" className="flex-shrink" onClick={click}>
+        <button type="submit" className="flex-shrink">
           <MdAdd className="w-[30px] h-[30px]" />
         </button>
       </form>
-      {error && (
-        <p className="text-red-500 text-sm mt-2 absolute top-10 left-2">
-          {error}
-        </p>
-      )}
+      <InputErrorMessage inputName="todoInsert" formState={formState} />
     </div>
   )
 }
