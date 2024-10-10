@@ -4,9 +4,9 @@ import {
   fetchCreateTodo,
   fetchDeleteTodo,
   fetchGetTodos,
-  fetchUpdataTodo,
+  fetchUpdateTodo,
 } from '@/app/_lib/fetchTodos'
-// 1. Context 생성
+
 import React, {
   ReactNode,
   createContext,
@@ -14,56 +14,60 @@ import React, {
   useEffect,
   useState,
 } from 'react'
-import { useUserContext } from './userContext'
-import { Prisma, todo } from '@prisma/client'
+import { Prisma, todo, userCategory } from '@prisma/client'
+import { useCategoryContext } from './categoryCntext'
 
 // Context 생성
 const TodosContext = createContext<{
   todos: todo[]
-  createTodo: (text: string) => void
-  updataTodo: (todo: Prisma.todoUpdateInput) => void
+  // selectedCategories: SelectedCategories[]
+  createTodo: (text: string, category: string) => void
+  updateTodo: (todo: Prisma.todoUpdateInput) => void
   deleteTodo: (id: string) => void
+  categoryNames: string[]
+  categories: userCategory[]
 }>({
   todos: [],
-  createTodo: (text: string) => {},
-  updataTodo: (todo: Prisma.todoUpdateInput) => {},
+  createTodo: (text: string, category: string) => {},
+  updateTodo: (todo: Prisma.todoUpdateInput) => {},
   deleteTodo: (id: string) => {},
+  categoryNames: [],
+  categories: [],
 })
 
 // 2. Provider 컴포넌트 작성
 export const TodosProvider = ({ children }: { children: ReactNode }) => {
-  const { user } = useUserContext()
+  const { categoryNames, userId, categories } = useCategoryContext()
   const [todos, setTodos] = useState<todo[]>([])
 
   useEffect(() => {
     const getTodos = async () => {
-      if (user) {
-        const userId = user.id
-        const todos = await fetchGetTodos(userId)
+      if (userId) {
+        const categoryString = categoryNames.join(',')
+        const todos = await fetchGetTodos(userId, categoryString)
         if (todos) {
           setTodos(todos)
         }
       }
     }
     getTodos()
-  }, [user])
+  }, [userId, categoryNames])
 
-  const createTodo = async (text: string) => {
-    if (user) {
-      const userId = user.id
-      console.log('userId', userId)
-      const todo = await fetchCreateTodo(userId, text)
+  const createTodo = async (text: string, category: string) => {
+    if (userId) {
+      const todo = await fetchCreateTodo(userId, text, category)
       if (todo) {
         setTodos([...todos, todo])
       }
     }
   }
 
-  const updataTodo = async (todo: Prisma.todoUpdateInput) => {
-    const newTodo = await fetchUpdataTodo(todo)
+  const updateTodo = async (todo: Prisma.todoUpdateInput) => {
+    const newTodo = await fetchUpdateTodo(todo)
     if (newTodo) {
       const targetIndex = todos.findIndex((todo) => todo.id === newTodo.id)
-      if (targetIndex !== -1) {
+      const hasTargetIndex = targetIndex !== -1
+      if (hasTargetIndex) {
         const next = [...todos]
         next[targetIndex] = newTodo
         setTodos(next)
@@ -80,7 +84,14 @@ export const TodosProvider = ({ children }: { children: ReactNode }) => {
 
   return (
     <TodosContext.Provider
-      value={{ todos, createTodo, updataTodo, deleteTodo }}
+      value={{
+        todos,
+        createTodo,
+        updateTodo,
+        deleteTodo,
+        categoryNames,
+        categories,
+      }}
     >
       {children}
     </TodosContext.Provider>

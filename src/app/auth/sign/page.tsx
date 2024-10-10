@@ -10,8 +10,8 @@ import DuplicationPassMessage from './_component/DuplicationPassMessage'
 import { FaRegCheckCircle } from 'react-icons/fa'
 import { GiCancel } from 'react-icons/gi'
 import { FormValues } from '../../../model/formValues'
-import InputRadio from '@/app/_component/inputRadio'
-import InputErrorMessage from '@/app/_component/inputErrorMessage'
+import InputErrorMessage from '@/app/_component/InputErrorMessage'
+import InputRadio from '@/app/_component/InputRadio'
 
 export default function SignUpPage() {
   const [userList, setUserList] = useState<userinfo[]>([])

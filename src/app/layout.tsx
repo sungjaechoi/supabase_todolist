@@ -1,6 +1,9 @@
 import type { Metadata } from 'next'
 import './globals.css'
 import localFont from 'next/font/local'
+import { UserProvider } from './_component/_contexts/userContext'
+import { CategoryProvider } from './_component/_contexts/categoryCntext'
+import { TodosProvider } from './_component/_contexts/todoContext'
 
 export const metadata: Metadata = {
   title: 'Create Next App',
@@ -21,7 +24,13 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={pretendard.className}>{children}</body>
+      <UserProvider>
+        <CategoryProvider>
+          <TodosProvider>
+            <body className={pretendard.className}>{children}</body>
+          </TodosProvider>
+        </CategoryProvider>
+      </UserProvider>
     </html>
   )
 }

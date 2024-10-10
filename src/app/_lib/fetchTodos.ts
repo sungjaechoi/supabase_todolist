@@ -1,14 +1,17 @@
 import { Prisma, todo } from '@prisma/client'
 
-export async function fetchGetTodos(userId: string) {
+export async function fetchGetTodos(userId: string, categoryNames: string) {
   try {
-    const response = await fetch(`/api/users/todo/${userId}`)
+    const response = await fetch(
+      `/api/users/todo/${userId}?category=${categoryNames}`,
+    )
 
     if (!response.ok) {
-      throw Error(`fetch Error:${response.status}`)
+      throw Error(`fetch Error: ${response.status}`)
     }
 
     const responseObj = await response.json()
+
     const todos: todo[] = responseObj.data
 
     return todos
@@ -17,11 +20,15 @@ export async function fetchGetTodos(userId: string) {
   }
 }
 
-export async function fetchCreateTodo(userId: string, text: string) {
+export async function fetchCreateTodo(
+  userId: string,
+  text: string,
+  category: string,
+) {
   try {
     const response = await fetch('/api/todo', {
       method: 'POST',
-      body: JSON.stringify({ userId, text }),
+      body: JSON.stringify({ userId, text, category }),
     })
 
     if (!response.ok) {
@@ -34,11 +41,11 @@ export async function fetchCreateTodo(userId: string, text: string) {
 
     return todo
   } catch (error) {
-    console.error('fetchCreateTodo', error)
+    console.error('fetchCreateTodoError:', error)
   }
 }
 
-export async function fetchUpdataTodo(data: Prisma.todoUpdateInput) {
+export async function fetchUpdateTodo(data: Prisma.todoUpdateInput) {
   try {
     const response = await fetch('/api/todo', {
       method: 'PATCH',
@@ -46,12 +53,12 @@ export async function fetchUpdataTodo(data: Prisma.todoUpdateInput) {
     })
 
     if (!response.ok) {
-      throw Error(`FetchError:${response.status}`)
+      throw Error(`FetchError: ${response.status}`)
     }
 
-    const resposeObj = await response.json()
+    const responseObj = await response.json()
 
-    const todo: todo = resposeObj.data
+    const todo: todo = responseObj.data
 
     return todo
   } catch (error) {
@@ -67,7 +74,7 @@ export async function fetchDeleteTodo(id: string) {
     })
 
     if (!response.ok) {
-      throw Error(`FetchError:${response.status}`)
+      throw Error(`FetchError: ${response.status}`)
     }
 
     return response.ok

@@ -1,16 +1,18 @@
+import Categories from './_component/Categories'
 import Todo from './_component/Todo'
-import { TodosProvider } from './_component/_contexts/todoContext'
-import { UserProvider } from './_component/_contexts/userContext'
 
 export default function Home() {
   return (
-    <div className="flex flex-col items-center pt-[60px]">
-      <h1 className="pb-[20px]  text-xl font-semibold">TODO LIST</h1>
-      <UserProvider>
-        <TodosProvider>
+    <div className="w-full h-full ">
+      <div className="flex h-full">
+        <div className=" flex-shrink basis-60 h-full border-r border-gray-300">
+          <h1 className="text-xl py-5 font-semibold text-center">TODO LIST</h1>
+          <Categories />
+        </div>
+        <div className="flex-auto pt-20 flex justify-center items-start">
           <Todo />
-        </TodosProvider>
-      </UserProvider>
+        </div>
+      </div>
     </div>
   )
 }

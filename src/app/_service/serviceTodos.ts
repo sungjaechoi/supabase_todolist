@@ -2,21 +2,30 @@ import { PrismaClient, todo } from '@prisma/client'
 
 const prisma = new PrismaClient()
 
-export async function serviceGetTodos(userId: string) {
+export async function serviceGetTodos(userId: string, categoryNames: string[]) {
   const response = await prisma.todo.findMany({
     where: {
-      userld: userId,
+      userId: userId,
+      ...(categoryNames.length > 0 && {
+        category: {
+          in: categoryNames,
+        },
+      }),
     },
   })
-
   return response
 }
 
-export async function serviceCreateTood(userId: string, text: string) {
+export async function serviceCreateTodo(
+  userId: string,
+  text: string,
+  category: string,
+) {
   const response = await prisma.todo.create({
     data: {
-      userld: userId,
+      userId: userId,
       text: text,
+      category: category,
     },
   })
 
@@ -31,7 +40,7 @@ export async function serviceDeleteTodo(id: string) {
   return response
 }
 
-export async function serviceUpdataTodo(todo: todo) {
+export async function serviceUpdateTodo(todo: todo) {
   const response = await prisma.todo.update({
     where: { id: todo.id },
     data: todo,

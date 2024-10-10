@@ -20,10 +20,10 @@ import { todo } from '@prisma/client'
 type Props = {
   todo: todo
   deleteTodo: (id: string) => void
-  updataTodo: (todo: todo) => void
+  updateTodo: (todo: todo) => void
 }
 
-export default function TodoItem({ todo, deleteTodo, updataTodo }: Props) {
+export default function TodoItem({ todo, deleteTodo, updateTodo }: Props) {
   const [isEditing, setIsEditing] = useState(false)
   const [newText, setNewText] = useState(todo.text)
   const inputRef = useRef<HTMLInputElement>(null)
@@ -41,7 +41,7 @@ export default function TodoItem({ todo, deleteTodo, updataTodo }: Props) {
   const saveHandler = async () => {
     const copy = JSON.parse(JSON.stringify(todo))
     const next = { ...copy, text: newText, checked: copy.checked }
-    await updataTodo(next)
+    await updateTodo(next)
     setIsEditing(false)
   }
 
@@ -54,14 +54,14 @@ export default function TodoItem({ todo, deleteTodo, updataTodo }: Props) {
     e.preventDefault()
     const copy = JSON.parse(JSON.stringify(todo))
     const next = { ...copy, text: newText, checked: copy.checked }
-    await updataTodo(next)
+    await updateTodo(next)
     setIsEditing(false)
   }
 
   const toggleHandler = async () => {
     const copy = JSON.parse(JSON.stringify(todo))
     const next = { ...copy, text: copy.text, checked: !todo.checked }
-    await updataTodo(next)
+    await updateTodo(next)
   }
 
   const keyDownCancelHandler: KeyboardEventHandler<HTMLInputElement> = (e) => {
@@ -72,7 +72,7 @@ export default function TodoItem({ todo, deleteTodo, updataTodo }: Props) {
   }
 
   return (
-    <div className="w-[600px] py-2 border-b flex items-center gap-3">
+    <li className="w-full py-2 border-b flex items-center gap-3">
       <form className="flex w-[530px] flex-auto" onSubmit={formSubmitHandler}>
         <input
           id={`check_${todo.id}`}
@@ -133,6 +133,6 @@ export default function TodoItem({ todo, deleteTodo, updataTodo }: Props) {
       ) : (
         <></>
       )}
-    </div>
+    </li>
   )
 }

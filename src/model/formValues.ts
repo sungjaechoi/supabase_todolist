@@ -5,4 +5,8 @@ export type FormValues = {
   name: string
   gender: string
   todoInsert: string
+  categorieCreate: string
+  categoryRadio: string
+  category: string
+  categoryEdit: string
 }

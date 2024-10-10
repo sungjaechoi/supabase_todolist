@@ -1,18 +1,27 @@
 'use client'
-
 import TodoInsert from './TodoInsert'
 import TodoList from './TodoList'
 import { useTodosContext } from './_contexts/todoContext'
 
-import Link from 'next/link'
 export default function Todo() {
-  const { todos, createTodo, updataTodo, deleteTodo } = useTodosContext()
-
+  const {
+    todos,
+    categoryNames,
+    createTodo,
+    updateTodo,
+    deleteTodo,
+    categories,
+  } = useTodosContext()
   return (
-    <>
-      <Link href="/login">Test</Link>
-      <TodoInsert createTodo={createTodo} />
-      <TodoList todos={todos} deleteTodo={deleteTodo} updataTodo={updataTodo} />
-    </>
+    <div className="">
+      <TodoInsert createTodo={createTodo} categories={categories} />
+      <TodoList
+        todos={todos}
+        deleteTodo={deleteTodo}
+        updateTodo={updateTodo}
+        categoryNames={categoryNames}
+        categories={categories}
+      />
+    </div>
   )
 }
