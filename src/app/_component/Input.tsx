@@ -9,6 +9,7 @@ type Props = {
   inputValue?: string
   register: UseFormRegister<FormValues>
   fieldoptions?: RegisterOptions<FormValues>
+  style?: string
 }
 
 export default function Input({
@@ -18,13 +19,14 @@ export default function Input({
   placeholder,
   fieldoptions,
   inputValue,
+  style,
 }: Props) {
   return (
     <>
       <label className="w-full">
         <span className="blind">{inputName}</span>
         <input
-          className="w-full h-[30px] flex-auto px-2"
+          className={`w-full h-[30px] flex-auto px-2 ${style}`}
           type={inputType}
           placeholder={placeholder}
           value={inputValue}

@@ -3,10 +3,9 @@
 import { FormValues } from '@/model/formValues'
 import { useState } from 'react'
 import { useForm, UseFormReturn } from 'react-hook-form'
-import { FiPlusCircle } from 'react-icons/fi'
 import Input from './Input'
-import { GiCancel } from 'react-icons/gi'
 import InputErrorMessage from './InputErrorMessage'
+import { MdAdd } from 'react-icons/md'
 
 type Props = {
   createCategorie: (name: string) => void
@@ -36,43 +35,34 @@ export default function CategoryInsert({ createCategorie }: Props) {
   }
 
   return (
-    <div className="flex justify-center items-center">
-      <button type="button" onClick={toogleInputfield}>
-        {isToogleState ? (
-          <GiCancel className="w-[30px] h-[30px]" />
-        ) : (
-          <FiPlusCircle className="w-[30px] h-[30px]" />
-        )}
-      </button>
-      {isToogleState ? (
-        <div className="flex relative">
-          <div className="w-full p-1 ml-1 border border-gray-300 rounded-lg">
-            <form
-              className="flex w-full gap-1"
-              onSubmit={handleSubmit(onSubmit)}
-            >
-              <Input
-                inputName="categorieCreate"
-                inputType="text"
-                placeholder="카테고리를 입력하세요"
-                register={register}
-                fieldoptions={{
-                  required: '카테고리를 입력하세요',
-                }}
-              />
-              <button type="submit" className="flex-shrink">
-                <FiPlusCircle className="w-[20px] h-[20px]" />
-              </button>
-            </form>
-          </div>
-          <div className=" absolute top-8 left-2">
-            <InputErrorMessage
+    <div className="w-full py-[16px]">
+      <div className="flex flex-col relative w-full px-[16px]">
+        <div className="w-full py-1 border border-solid border-[#f2f3f7] bg-[#f2f3f7] rounded-[8px]">
+          <form
+            className="flex w-full gap-1 mr-[10px] "
+            onSubmit={handleSubmit(onSubmit)}
+          >
+            <Input
               inputName="categorieCreate"
-              formState={formState}
+              inputType="text"
+              placeholder="카테고리를 입력하세요"
+              register={register}
+              fieldoptions={{
+                required: '카테고리를 입력하세요',
+              }}
             />
-          </div>
+            <button type="submit" className="mr-2">
+              <MdAdd className="w-[20px] h-[20px]" />
+            </button>
+          </form>
         </div>
-      ) : null}
+        <div className=" absolute top-[33px] left-[15px]">
+          <InputErrorMessage
+            inputName="categorieCreate"
+            formState={formState}
+          />
+        </div>
+      </div>
     </div>
   )
 }

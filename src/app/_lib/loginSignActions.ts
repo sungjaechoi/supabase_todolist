@@ -22,7 +22,7 @@ export async function login(formData: FormData) {
   }
 
   revalidatePath('/', 'layout')
-  redirect('/')
+  redirect('/auth/login?isReload=true')
 }
 
 export async function signup(signupData: FormValues) {
@@ -54,4 +54,16 @@ export async function signup(signupData: FormValues) {
   }
 
   redirect(`/auth/signSuccess`)
+}
+
+export async function signOut() {
+  const supabase = createClient()
+
+  const { error } = await supabase.auth.signOut()
+
+  if (error) {
+    console.error('로그아웃 중 에러 발생:', error.message)
+  } else {
+    redirect(`auth/login`)
+  }
 }

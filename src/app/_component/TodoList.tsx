@@ -15,20 +15,21 @@ export default function TodoList({
   todos,
   deleteTodo,
   updateTodo,
-  categoryNames,
   categories,
 }: Props) {
   // 카테고리별로 그룹화된 todos 데이터를 생성
   const groupedTodos = groupTodosByCategory(todos)
   return (
-    <>
+    <div className="flex-auto w-full min-w-[300px] px-[16px] my-[16px] customScrollbar max-md:mt-[16px] max-md:mb-0 max-md:pb-[60px] max-md:h-[100vw]">
       {categories
         .map((c) => c.name)
         .map((category) =>
           groupedTodos[category] ? (
-            <div key={category}>
-              <h3>{category}</h3>
-              <ul>
+            <div key={category} className={`flex flex-col gap-[10px] w-full`}>
+              <h3 className="text-[18px] text-black font-semibold">
+                {category}
+              </h3>
+              <ul className="mb-[10px] flex flex-col gap-[10px]">
                 {groupedTodos[category].map((todo) => (
                   <TodoItem
                     key={todo.id}
@@ -41,7 +42,7 @@ export default function TodoList({
             </div>
           ) : null,
         )}
-    </>
+    </div>
   )
 }
 

@@ -12,7 +12,7 @@ export default function InputErrorMessage({ formState, inputName }: Props) {
   return (
     <>
       {formState.touchedFields[name] && formState.errors[name] && (
-        <p className="flex justify-start w-full mt-[5px] text-sm text-red-500">
+        <p className="flex justify-start w-full mt-[5px] ml-[8px] text-sm text-red-400">
           {formState.errors[name].message}
         </p>
       )}

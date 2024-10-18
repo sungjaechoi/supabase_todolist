@@ -34,7 +34,7 @@ export default function InputRadio({
                   value={value}
                 />
                 <label
-                  className="w-full h-[40px] flex justify-center items-center rounded-lg cursor-pointer transition-colors duration-300 peer-checked:bg-gray-400 peer-checked:text-white"
+                  className="w-full h-full flex justify-center items-center rounded-lg cursor-pointer transition-colors duration-300 text-gray-400 peer-checked:text-black peer-checked:bg-white"
                   htmlFor={value}
                 >
                   <span className="font-semibold">{value}</span>

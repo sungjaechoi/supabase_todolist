@@ -15,12 +15,24 @@ import {
   fetchUpdateCategoryWithTodos,
 } from '@/app/_lib/fetchCategories'
 import { userCategory } from '@prisma/client'
-// Context 생성
+import { fetchGetTodos } from '@/app/_lib/fetchTodos'
 
+type ModalInterface = {
+  categoryId: string
+  category: string
+  todoLength: number
+}
+
+// Context 생성
 const CategoryContext = createContext<{
   categories: userCategory[]
   categoryNames: string[]
   userId: string | undefined
+  isMenuOpen: boolean
+  setIsMenuOpen: React.Dispatch<React.SetStateAction<boolean>>
+  isModalOpen: boolean
+  setIsModalOpen: React.Dispatch<React.SetStateAction<boolean>>
+  modalInterface: ModalInterface
   createCategory: (name: string) => void
   categoryDeleteWithTodos: (categoryId: string, categoryName: string) => void
   toggle: (category: string) => void
@@ -30,10 +42,14 @@ const CategoryContext = createContext<{
     categoryName: string,
     newCategoryName: string,
   ) => void
+  onModal: (userId: string, categoryId: string, category: string) => void
 }>({
   categories: [],
   userId: '',
   categoryNames: [],
+  isMenuOpen: false,
+  isModalOpen: false,
+  modalInterface: { categoryId: '', category: '', todoLength: 0 },
   createCategory: () => {},
   categoryDeleteWithTodos: (id: string, category: string) => {},
   toggle: (category: string) => {},
@@ -43,6 +59,13 @@ const CategoryContext = createContext<{
     categoryName: string,
     newCategoryName: string,
   ) => {},
+  setIsMenuOpen: () => {
+    false
+  },
+  setIsModalOpen: () => {
+    false
+  },
+  onModal: () => {},
 })
 
 // 2. Provider 컴포넌트 작성
@@ -51,6 +74,13 @@ export const CategoryProvider = ({ children }: { children: ReactNode }) => {
   const [userId, setUserId] = useState('')
   const [categories, setCategories] = useState<userCategory[]>([])
   const [categoryNames, setCategoryNames] = useState<string[]>([])
+  const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const [isModalOpen, setIsModalOpen] = useState(false)
+  const [modalInterface, setModalInterface] = useState<ModalInterface>({
+    categoryId: '',
+    category: '',
+    todoLength: 0,
+  })
 
   useEffect(() => {
     const getCategories = async () => {
@@ -131,9 +161,32 @@ export const CategoryProvider = ({ children }: { children: ReactNode }) => {
     setCategoryNames([])
   }
 
+  const onModal = async (
+    userId: string,
+    categoryId: string,
+    category: string,
+  ) => {
+    setIsModalOpen(true)
+    const todos = await fetchGetTodos(userId, category)
+    if (todos) {
+      const next = {
+        categoryId: categoryId,
+        category: category,
+        todoLength: todos.length || 0,
+      }
+      setModalInterface(next)
+    }
+  }
+
   return (
     <CategoryContext.Provider
       value={{
+        onModal,
+        modalInterface,
+        isModalOpen,
+        setIsModalOpen,
+        isMenuOpen,
+        setIsMenuOpen,
         categoryNames,
         categories,
         createCategory,

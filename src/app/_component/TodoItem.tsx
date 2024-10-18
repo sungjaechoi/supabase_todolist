@@ -72,8 +72,8 @@ export default function TodoItem({ todo, deleteTodo, updateTodo }: Props) {
   }
 
   return (
-    <li className="w-full py-2 border-b flex items-center gap-3">
-      <form className="flex w-[530px] flex-auto" onSubmit={formSubmitHandler}>
+    <li className="flex items-center gap-2 w-full px-[10px] py-[4px] rounded-[8px] hover:bg-[rgba(55,191,212,0.2)]">
+      <form className="flex-auto flex w-full" onSubmit={formSubmitHandler}>
         <input
           id={`check_${todo.id}`}
           type="checkbox"
@@ -82,9 +82,9 @@ export default function TodoItem({ todo, deleteTodo, updateTodo }: Props) {
         />
         <label htmlFor={`check_${todo.id}`} className="flex flex-auto">
           {todo.checked ? (
-            <MdOutlineCheckBox className="w-[30px] h-[30px]" />
+            <MdOutlineCheckBox className="min-w-[30px] min-h-[30px]" />
           ) : (
-            <MdOutlineCheckBoxOutlineBlank className="w-[30px] h-[30px]" />
+            <MdOutlineCheckBoxOutlineBlank className="min-w-[30px] min-h-[30px]" />
           )}
           {isEditing ? (
             <input
@@ -97,7 +97,7 @@ export default function TodoItem({ todo, deleteTodo, updateTodo }: Props) {
             />
           ) : (
             <span
-              className={clsx('text-lg leading-[30px] px-2', {
+              className={clsx('flex-auto text-black leading-[30px] px-2', {
                 'line-through': todo.checked,
               })}
             >
@@ -117,8 +117,8 @@ export default function TodoItem({ todo, deleteTodo, updateTodo }: Props) {
             </button>
           </>
         ) : (
-          <button type="button" onClick={editHandler}>
-            <FaRegEdit className="w-[30px] h-[30px]" />
+          <button type="button" className="mr-[5px]" onClick={editHandler}>
+            <FaRegEdit className="w-[25px] h-[25px]" />
           </button>
         ))}
       {todo.checked ? (

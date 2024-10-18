@@ -13,7 +13,7 @@ export default function Todo() {
     categories,
   } = useTodosContext()
   return (
-    <div className="">
+    <div className="flex flex-col w-full h-full bg-white rounded-[8px] max-md:rounded-none max-md:rounded-b-[8px]">
       <TodoInsert createTodo={createTodo} categories={categories} />
       <TodoList
         todos={todos}

@@ -31,26 +31,19 @@ export default function TodoInsert({ createTodo, categories }: Props) {
   }
 
   return (
-    <div className="w-full px-3 py-2 border border-gray-300 rounded-lg">
-      <form className="flex" onSubmit={handleSubmit(onSubmit)}>
-        <Input
-          inputName="todoInsert"
-          inputType="text"
-          register={register}
-          inputValue={inputValue}
-          placeholder="할 일을 입력하세요 "
-          fieldoptions={{
-            required: '할 일을 입력 하세요',
-          }}
-        />
+    <div className="flex-initial w-full py-[12px] px-[20px] border-b-4 border-[#f2f3f7] border-solid max-md:border-none">
+      <form
+        className="flex justify-center items-center h-[50px] gap-[8px]"
+        onSubmit={handleSubmit(onSubmit)}
+      >
         <select
+          className="w-[180px] h-[40px] px-2 bg-[#f2f3f7] rounded-lg text-gray-400 max-md:w-[92px]"
           {...register('category', {
             required: '카테고리를 선택하세요',
             validate: (value) =>
               value === 'default' ? '카테고리를 선택해주세요' : undefined,
           })}
           defaultValue="default"
-          className="mt-2 px-3 py-2 border border-gray-300 rounded-lg"
         >
           <option value="default" disabled>
             카테고리를 선택하세요
@@ -61,6 +54,17 @@ export default function TodoInsert({ createTodo, categories }: Props) {
             </option>
           ))}
         </select>
+        <Input
+          style="flex-auto h-[40px] border-[2px] border-solid border-[#f2f3f7] bg-[#f2f3f7] rounded-[8px]"
+          inputName="todoInsert"
+          inputType="text"
+          register={register}
+          inputValue={inputValue}
+          placeholder="할 일을 입력하세요 "
+          fieldoptions={{
+            required: '할 일을 입력 하세요',
+          }}
+        />
         <button type="submit" className="flex-shrink">
           <MdAdd className="w-[30px] h-[30px]" />
         </button>

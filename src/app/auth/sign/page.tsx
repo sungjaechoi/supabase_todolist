@@ -68,7 +68,7 @@ export default function SignUpPage() {
   }: // 에러 지우기
   UseFormReturn<FormValues> = useForm<FormValues>({
     defaultValues: {
-      gender: 'male',
+      gender: '남',
     },
     mode: 'onChange',
   })
@@ -98,14 +98,14 @@ export default function SignUpPage() {
   const password = watch('password')
 
   return (
-    <div className="w-full h-[70%] min-h-[800px] flex items-center justify-center">
-      <div className="flex flex-col justify-center items-center gap-6">
-        <h1 className="text-5xl font-medium">Sign up</h1>
+    <div className="w-full h-[80%] min-w-[300px] max-w-[600px] mx-auto my-auto flex items-center">
+      <div className="flex flex-col justify-center items-center gap-6 w-full p-[20px]">
+        <h1 className="text-5xl font-medium">회원 가입</h1>
         <form
-          className="flex flex-col w-[400px] gap-3"
+          className="flex flex-col w-full gap-3"
           onSubmit={handleSubmit(onSubmit)}
         >
-          <div className="flex flex-col justify-center items-center p-2 border border-gray-300 rounded-lg relative">
+          <div className="flex flex-col justify-center items-center p-2 border border-gray-300 rounded-lg relative bg-white">
             <Input
               inputName="email"
               inputType="email"
@@ -128,7 +128,7 @@ export default function SignUpPage() {
             {!formState.errors.email && isKeypress && (
               <button
                 type="button"
-                className={`flex-auto w-full h-[30px] px-2 mt-2 bg-gray-400 rounded-lg text-white text-lg`}
+                className="flex-auto w-full h-[30px] px-2 mt-2 bg-gray-500 text-white rounded-lg text-lg"
                 onClick={async () => {
                   emailDuplicationCheck(emailValue)
                   setIsChecked(true)
@@ -149,7 +149,7 @@ export default function SignUpPage() {
               <GiCancel className="absolute top-4 right-4 fill-red-500" />
             )}
           </div>
-          <div className="flex flex-col justify-center items-center p-2 border border-gray-300 rounded-lg">
+          <div className="flex flex-col justify-center items-center p-2 border border-gray-300 rounded-lg bg-white">
             <Input
               inputName="password"
               inputType="password"
@@ -161,7 +161,7 @@ export default function SignUpPage() {
               }}
             />
           </div>
-          <div className="flex flex-col justify-center items-center p-2 border border-gray-300 rounded-lg">
+          <div className="flex flex-col justify-center items-center p-2 border border-gray-300 rounded-lg bg-white">
             <Input
               inputName="passwordReType"
               inputType="password"
@@ -183,7 +183,7 @@ export default function SignUpPage() {
               formState={formState}
             />
           </div>
-          <div className="flex flex-col justify-center items-center p-2 border border-gray-300 rounded-lg">
+          <div className="flex flex-col justify-center items-center p-2 border border-gray-300 rounded-lg bg-white">
             <Input
               inputName="name"
               inputType="text"
@@ -192,18 +192,18 @@ export default function SignUpPage() {
               fieldoptions={{
                 required: '이름은 필수 항목 입니다.',
                 validate: (value) =>
-                  value.length < 3 || value.length >= 8
+                  value.length <= 2 || value.length >= 8
                     ? '이름은 최소 3자이상 최대 8자 미만 입니다.'
                     : undefined,
               }}
             />
             <InputErrorMessage inputName="name" formState={formState} />
           </div>
-          <div className="flex justify-center h-[40px] border border-gray-300 rounded-lg">
+          <div className="flex justify-center h-[40px] border-[2px] border-solid border-white rounded-lg">
             <InputRadio
               inputName="gender"
               inputType="radio"
-              radioValues={['male', 'female']}
+              radioValues={['남', '여']}
               register={register}
               fieldoptions={{
                 required: '성별을 선택해주세요',
@@ -213,8 +213,8 @@ export default function SignUpPage() {
           <button
             className={`${
               formState.isValid && isDuplicationPass
-                ? 'bg-gray-400 text-white font-semibold'
-                : 'bg-white'
+                ? 'bg-white'
+                : 'bg-black-400 text-white font-semibold'
             } h-[50px] mt-[10px] border border-gray-300 rounded-lg border-solid font-semibold`}
             type="submit"
             disabled={!formState.isValid || !isDuplicationPass}

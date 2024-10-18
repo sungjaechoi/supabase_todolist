@@ -352,9 +352,9 @@ model todo {
 
 /// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
 model userCategory {
-  id     String @id(map: "categories_pkey") @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  name   String @default("")
+  id     String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   userId String @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name   String
 
   @@schema("public")
 }
