@@ -53,6 +53,7 @@ export default function Modal() {
                           modalInterface.categoryId,
                           modalInterface.category,
                         )
+                        setIsModalOpen(false)
                       }}
                     >
                       예

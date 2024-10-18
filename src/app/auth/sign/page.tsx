@@ -11,7 +11,7 @@ import { FaRegCheckCircle } from 'react-icons/fa'
 import { GiCancel } from 'react-icons/gi'
 import { FormValues } from '../../../model/formValues'
 import InputErrorMessage from '@/app/_component/InputErrorMessage'
-import InputRadio from '@/app/_component/InputRadio'
+import InputRadio from '@/app/_component/inputRadio'
 
 export default function SignUpPage() {
   const [userList, setUserList] = useState<userinfo[]>([])

@@ -3,9 +3,17 @@ import Link from 'next/link'
 import { login } from '../../_lib/loginSignActions'
 import { CiUser, CiLock } from 'react-icons/ci'
 import { useSearchParams } from 'next/navigation'
-import { useEffect } from 'react'
+import { useEffect, Suspense } from 'react'
 
 export default function LoginPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <LoginContent />
+    </Suspense>
+  )
+}
+
+function LoginContent() {
   const query = useSearchParams()
   const isValidAuth = query.get('loginError') || ''
 
@@ -14,7 +22,7 @@ export default function LoginPage() {
     if (isReload) {
       window.location.href = '/'
     }
-  })
+  }, [query]) // useEffect 의존성 배열에 query 추가
 
   return (
     <div className="w-full h-[60%] min-h-[300px] flex items-center justify-center">
