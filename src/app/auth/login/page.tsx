@@ -1,6 +1,6 @@
 'use client'
 import Link from 'next/link'
-import { login } from '../../_lib/loginSignActions'
+import { login, InstantLogin } from '../../_lib/loginSignActions'
 import { CiUser, CiLock } from 'react-icons/ci'
 import { useSearchParams } from 'next/navigation'
 import { useEffect, Suspense } from 'react'
@@ -23,6 +23,10 @@ function LoginContent() {
       window.location.href = '/'
     }
   }, [query]) // useEffect 의존성 배열에 query 추가
+
+  const InstantLoginHandler = async () => {
+    await InstantLogin()
+  }
 
   return (
     <div className="w-full h-[60%] min-h-[300px] flex items-center justify-center">
@@ -74,6 +78,13 @@ function LoginContent() {
           >
             회원 가입
           </Link>
+          <button
+            className="h-[40px] border border-gray-300 rounded-lg border-solid bg-white"
+            type="button"
+            onClick={InstantLoginHandler}
+          >
+            즉시 로그인
+          </button>
         </form>
       </div>
     </div>

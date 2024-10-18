@@ -25,6 +25,26 @@ export async function login(formData: FormData) {
   redirect('/auth/login?isReload=true')
 }
 
+export async function InstantLogin() {
+  const supabase = createClient()
+
+  // type-casting here for convenience
+  // in practice, you should validate your inputs
+  const data = {
+    email: 'sungjaechoi39@gmail.com',
+    password: 'in11-510653',
+  }
+
+  const { error } = await supabase.auth.signInWithPassword(data)
+
+  if (error) {
+    redirect(`/auth/login?loginError=${true}`)
+  }
+
+  revalidatePath('/', 'layout')
+  redirect('/auth/login?isReload=true')
+}
+
 export async function signup(signupData: FormValues) {
   const supabase = createClient()
 
