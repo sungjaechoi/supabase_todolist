@@ -6,6 +6,7 @@ import { useTodosContext } from './_contexts/todoContext'
 export default function Todo() {
   const {
     todos,
+    isLoading,
     categoryNames,
     createTodo,
     updateTodo,
@@ -21,6 +22,7 @@ export default function Todo() {
         updateTodo={updateTodo}
         categoryNames={categoryNames}
         categories={categories}
+        isLoading={isLoading}
       />
     </div>
   )

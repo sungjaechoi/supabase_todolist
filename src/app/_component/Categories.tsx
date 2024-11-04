@@ -4,7 +4,7 @@ import { useCategoryContext } from './_contexts/categoryCntext'
 import CategoryInsert from './CategoryInsert'
 import CategoryList from './CategoryList'
 
-export default function Categories() {
+export default function Categories({ isMobile }: { isMobile: boolean }) {
   const {
     createCategory,
     toggle,
@@ -13,7 +13,9 @@ export default function Categories() {
     clean,
     categoryUdateWithTodos,
     onModal,
+    isLoading,
   } = useCategoryContext()
+
   return (
     <div className="flex-auto bg-white rounded-bl-[8px] rounded-br-[8px] h-[calc(100%-80px)] max-md:rounded-[8px]">
       <CategoryInsert createCategorie={createCategory} />
@@ -24,6 +26,7 @@ export default function Categories() {
         categoryUdateWithTodos={categoryUdateWithTodos}
         clean={clean}
         onModal={onModal}
+        isLoading={isMobile ? false : isLoading}
       />
     </div>
   )

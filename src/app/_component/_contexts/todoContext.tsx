@@ -19,8 +19,8 @@ import { useCategoryContext } from './categoryCntext'
 
 // Context 생성
 const TodosContext = createContext<{
+  isLoading: boolean
   todos: todo[]
-  // selectedCategories: SelectedCategories[]
   createTodo: (text: string, category: string) => void
   updateTodo: (todo: Prisma.todoUpdateInput) => void
   deleteTodo: (id: string) => void
@@ -28,6 +28,7 @@ const TodosContext = createContext<{
   categories: userCategory[]
 }>({
   todos: [],
+  isLoading: false,
   createTodo: (text: string, category: string) => {},
   updateTodo: (todo: Prisma.todoUpdateInput) => {},
   deleteTodo: (id: string) => {},
@@ -39,14 +40,17 @@ const TodosContext = createContext<{
 export const TodosProvider = ({ children }: { children: ReactNode }) => {
   const { categoryNames, userId, categories } = useCategoryContext()
   const [todos, setTodos] = useState<todo[]>([])
+  const [isLoading, setIsLoading] = useState<boolean>(true)
 
   useEffect(() => {
     const getTodos = async () => {
       if (userId) {
+        setIsLoading(true)
         const categoryString = categoryNames.join(',')
         const todos = await fetchGetTodos(userId, categoryString)
         if (todos) {
           setTodos(todos)
+          setIsLoading(false)
         }
       }
     }
@@ -85,6 +89,7 @@ export const TodosProvider = ({ children }: { children: ReactNode }) => {
   return (
     <TodosContext.Provider
       value={{
+        isLoading,
         todos,
         createTodo,
         updateTodo,

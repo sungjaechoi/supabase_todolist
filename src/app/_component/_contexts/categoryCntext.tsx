@@ -25,6 +25,7 @@ type ModalInterface = {
 
 // Context 생성
 const CategoryContext = createContext<{
+  isLoading: boolean
   categories: userCategory[]
   categoryNames: string[]
   userId: string | undefined
@@ -50,6 +51,7 @@ const CategoryContext = createContext<{
   isMenuOpen: false,
   isModalOpen: false,
   modalInterface: { categoryId: '', category: '', todoLength: 0 },
+  isLoading: false,
   createCategory: () => {},
   categoryDeleteWithTodos: (id: string, category: string) => {},
   toggle: (category: string) => {},
@@ -81,14 +83,17 @@ export const CategoryProvider = ({ children }: { children: ReactNode }) => {
     category: '',
     todoLength: 0,
   })
+  const [isLoading, setIsLoading] = useState<boolean>(true)
 
   useEffect(() => {
     const getCategories = async () => {
       if (user) {
+        setIsLoading(true)
         setUserId(user.id)
         const id = user.id
         const categories = (await fetchGetCategories(id)) as userCategory[]
         setCategories(categories)
+        setIsLoading(false)
       }
     }
     getCategories()
@@ -181,6 +186,7 @@ export const CategoryProvider = ({ children }: { children: ReactNode }) => {
   return (
     <CategoryContext.Provider
       value={{
+        isLoading,
         onModal,
         modalInterface,
         isModalOpen,

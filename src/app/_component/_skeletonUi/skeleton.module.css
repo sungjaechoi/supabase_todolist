@@ -1,0 +1,59 @@
+@keyframes load {
+  0% {
+    background-position: 100% 0;
+  }
+  100% {
+    background-position: -100% 0;
+  }
+}
+
+.skeleton_container {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 16px;
+  overflow-y: hidden;
+}
+
+.skeleton_title {
+  width: 60%;
+  height: 18px;
+  border-radius: 8px;
+  background-color: red;
+  background: linear-gradient(90deg, #f2f3f7 25%, #fff 30%, #f2f3f7 75%);
+  background-size: 200% 100%;
+  background-position: 100% 0;
+  animation: load 1.5s ease-in-out infinite;
+  pointer-events: none;
+}
+
+.skeleton_ul {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 0 8px;
+  /* overflow-y: hidden; */
+}
+
+.skeleton_categoriy_item {
+  width: 100%;
+  height: 60px;
+  border-radius: 8px;
+  background: linear-gradient(90deg, #f2f3f7 25%, #fff 30%, #f2f3f7 75%);
+  background-size: 200% 100%;
+  background-position: 100% 0;
+  animation: load 1.5s ease-in-out infinite;
+  pointer-events: none;
+}
+
+.skeleton_todo_item {
+  width: 100%;
+  height: 30px;
+  border-radius: 8px;
+  background: linear-gradient(90deg, #f2f3f7 25%, #fff 30%, #f2f3f7 75%);
+  background-size: 200% 100%;
+  background-position: 100% 0;
+  animation: load 1.5s ease-in-out infinite;
+  pointer-events: none;
+}

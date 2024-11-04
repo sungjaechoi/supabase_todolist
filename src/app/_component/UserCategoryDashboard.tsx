@@ -9,7 +9,7 @@ import { VscChromeClose } from 'react-icons/vsc'
 
 export default function UserCategoryDashboard() {
   const { isMenuOpen, setIsMenuOpen } = useCategoryContext()
-  const [isMobile, setIsMobile] = useState(false)
+  const [isMobile, setIsMobile] = useState<boolean | null>(null)
 
   useEffect(() => {
     const handleResize = () => {
@@ -22,7 +22,11 @@ export default function UserCategoryDashboard() {
 
     // 컴포넌트가 언마운트될 때 이벤트 제거
     return () => window.removeEventListener('resize', handleResize)
-  }, [])
+  }, [isMobile])
+
+  if (isMobile === null) {
+    return null
+  }
 
   return (
     <>
@@ -43,7 +47,7 @@ export default function UserCategoryDashboard() {
                     <VscChromeClose className="w-[60px] h-[60px] p-[20px] fill-white" />
                   </button>
                   <div className="absolute top-1/2 left-1/2 w-[80%] h-[60%] -translate-x-1/2 -translate-y-1/2 bg-white rounded-[8px]">
-                    <Categories />
+                    <Categories isMobile={isMobile} />
                   </div>
                 </div>
               </div>
@@ -54,7 +58,7 @@ export default function UserCategoryDashboard() {
         <>
           <MainHeading />
           <UserInfoPanelWithLogout />
-          <Categories />
+          <Categories isMobile={isMobile} />
         </>
       )}
     </>

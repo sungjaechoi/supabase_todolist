@@ -23,11 +23,13 @@ type UserInfo = {
 const UserContext = createContext<{
   user: users | null
   userInfo: UserInfo | null
+  isLoading: boolean
   getUser: () => void
 }>({
   user: null,
   userInfo: null,
   getUser: () => {},
+  isLoading: false,
 })
 
 // 2. Provider 컴포넌트 작성
@@ -35,9 +37,11 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<users | null>(null)
   const [userInfo, setUserInfo] = useState<UserInfo | null>(null)
   const client = createClient()
+  const [isLoading, setIsLoading] = useState<boolean>(true)
 
   const getUser = async () => {
     const id = (await client.auth.getUser()).data.user?.id
+    setIsLoading(true)
     if (id) {
       const user = (await fetchGetUserInfo(id)) as users | undefined
       if (user) {
@@ -52,6 +56,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
           gender: user_meta_data.gender,
         }
         setUserInfo(userInfo)
+        setIsLoading(false)
       }
     }
   }
@@ -61,7 +66,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
   }, [])
 
   return (
-    <UserContext.Provider value={{ user, userInfo, getUser }}>
+    <UserContext.Provider value={{ user, userInfo, getUser, isLoading }}>
       {children}
     </UserContext.Provider>
   )

@@ -1,9 +1,8 @@
 'use client'
 
-import { useEffect, useState } from 'react'
 import CategoryItem from './CategoryItem'
-import Categories from './Categories'
 import { userCategory } from '@prisma/client'
+import LoadingCategoryList from './_skeletonUi/LoadingCategoryList'
 
 type Props = {
   categories: userCategory[]
@@ -16,6 +15,7 @@ type Props = {
     newCategoryName: string,
   ) => void
   onModal: (userId: string, categoryId: string, category: string) => void
+  isLoading: boolean | null
 }
 
 export default function CategoryList({
@@ -25,13 +25,17 @@ export default function CategoryList({
   clean,
   categoryUdateWithTodos,
   onModal,
+  isLoading,
 }: Props) {
   const allListToggletBtnHandler = () => {
     clean()
   }
 
   return (
-    <div className="flex flex-col h-[calc(100%-70px)] pb-[60px] max-md:p-0 max-md:h-full">
+    <div
+      style={{ overflowY: isLoading ? 'hidden' : 'auto' }}
+      className="flex flex-col h-[calc(100%-70px)] pb-[60px] max-md:p-0 max-md:h-full"
+    >
       <button
         type="button"
         className="flex-initial w-full min-h-[50px]"
@@ -39,19 +43,23 @@ export default function CategoryList({
       >
         <span className="font-semibold">전체</span>
       </button>
-      <ul className="flex-auto flex flex-col gap-[8px] h-full pl-[16px] pr-[8px] customScrollbar">
-        {categories &&
-          categories.map((category) => (
-            <CategoryItem
-              key={category.id}
-              category={category}
-              toggle={toggle}
-              isCheck={categoryNames.includes(category.name)}
-              categoryUdateWithTodos={categoryUdateWithTodos}
-              onModal={onModal}
-            />
-          ))}
-      </ul>
+      {isLoading ? (
+        <LoadingCategoryList />
+      ) : (
+        <ul className="flex-auto flex flex-col gap-[8px] h-full pl-[16px] pr-[8px] customScrollbar">
+          {categories &&
+            categories.map((category) => (
+              <CategoryItem
+                key={category.id}
+                category={category}
+                toggle={toggle}
+                isCheck={categoryNames.includes(category.name)}
+                categoryUdateWithTodos={categoryUdateWithTodos}
+                onModal={onModal}
+              />
+            ))}
+        </ul>
+      )}
     </div>
   )
 }

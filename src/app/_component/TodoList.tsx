@@ -2,6 +2,7 @@
 
 import { todo, userCategory } from '@prisma/client'
 import TodoItem from './TodoItem'
+import LoadingTodoList from './_skeletonUi/LoadingTodoList'
 
 type Props = {
   todos: todo[]
@@ -9,6 +10,7 @@ type Props = {
   updateTodo: (todo: todo) => void
   categoryNames: string[]
   categories: userCategory[]
+  isLoading: boolean
 }
 
 export default function TodoList({
@@ -16,9 +18,15 @@ export default function TodoList({
   deleteTodo,
   updateTodo,
   categories,
+  isLoading,
 }: Props) {
   // 카테고리별로 그룹화된 todos 데이터를 생성
   const groupedTodos = groupTodosByCategory(todos)
+
+  if (isLoading) {
+    return <LoadingTodoList />
+  }
+
   return (
     <div className="flex-auto w-full min-w-[300px] px-[16px] my-[16px] customScrollbar max-md:mt-[16px] max-md:mb-0 max-md:pb-[60px] max-md:h-[100vw]">
       {categories
