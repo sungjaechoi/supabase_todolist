@@ -71,14 +71,25 @@ export default function TodoItem({ todo, deleteTodo, updateTodo }: Props) {
     }
   }
 
+  const keyDownEnterlHandler: KeyboardEventHandler<HTMLInputElement> = (e) => {
+    if (e.key === 'Enter') {
+      toggleHandler()
+    }
+  }
+
   return (
     <li className="flex items-center gap-2 w-full px-[10px] py-[4px] rounded-[8px] hover:bg-[rgba(55,191,212,0.2)]">
-      <form className="flex-auto flex w-full" onSubmit={formSubmitHandler}>
+      <form
+        className="relative flex-auto flex w-full"
+        onSubmit={formSubmitHandler}
+      >
         <input
+          className=" absolute top-[3px] left-[3px] w-6 h-6"
           id={`check_${todo.id}`}
           type="checkbox"
           checked={todo.checked as boolean}
           onChange={toggleHandler}
+          onKeyDown={keyDownEnterlHandler}
         />
         <label htmlFor={`check_${todo.id}`} className="flex flex-auto">
           {todo.checked ? (
