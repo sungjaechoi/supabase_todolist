@@ -3,11 +3,12 @@ import Link from 'next/link'
 import { login, InstantLogin } from '../../_lib/loginSignActions'
 import { CiUser, CiLock } from 'react-icons/ci'
 import { useSearchParams } from 'next/navigation'
-import { useEffect, Suspense } from 'react'
+import { useEffect, Suspense, useState } from 'react'
+import { BeatLoader, FadeLoader } from 'react-spinners'
 
 export default function LoginPage() {
   return (
-    <Suspense fallback={<div>Loading...</div>}>
+    <Suspense fallback={<FadeLoader />}>
       <LoginContent />
     </Suspense>
   )
@@ -16,6 +17,8 @@ export default function LoginPage() {
 function LoginContent() {
   const query = useSearchParams()
   const isValidAuth = query.get('loginError') || ''
+  const [isLoginLoading, setIsLoginLoading] = useState(false)
+  const [isInstantLoginLoading, setIsInstantLoginLoading] = useState(false)
 
   useEffect(() => {
     const isReload = query.get('isReload')
@@ -25,6 +28,7 @@ function LoginContent() {
   }, [query]) // useEffect 의존성 배열에 query 추가
 
   const InstantLoginHandler = async () => {
+    setIsInstantLoginLoading(true)
     await InstantLogin()
   }
 
@@ -69,8 +73,15 @@ function LoginContent() {
           <button
             className="h-[40px] border border-gray-300 rounded-lg border-solid bg-white"
             formAction={login}
+            onClick={() => {
+              setIsLoginLoading(true)
+            }}
           >
-            로그인
+            {isLoginLoading ? (
+              <BeatLoader color="#cacaca" margin={4} size={8} />
+            ) : (
+              '로그인'
+            )}
           </button>
           <Link
             className="h-[40px] flex justify-center items-center border border-gray-300 rounded-lg border-solid bg-gray-400 text-white"
@@ -83,7 +94,11 @@ function LoginContent() {
             type="button"
             onClick={InstantLoginHandler}
           >
-            즉시 로그인
+            {isInstantLoginLoading ? (
+              <BeatLoader color="#cacaca" margin={4} size={8} />
+            ) : (
+              '즉시 로그인'
+            )}
           </button>
         </form>
       </div>
