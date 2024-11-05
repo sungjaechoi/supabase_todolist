@@ -5,12 +5,12 @@ import { useEffect, useState } from 'react'
 
 export default function SignSuccessPage() {
   const router = useRouter()
-  const [countdown, setCountdown] = useState(100000)
+  const [countdown, setCountdown] = useState(10)
 
   useEffect(() => {
     const timer = setInterval(() => {
       setCountdown((prev) => prev - 1)
-    }, 1000)
+    }, 10)
 
     if (countdown === 0) {
       router.push('/auth/login')

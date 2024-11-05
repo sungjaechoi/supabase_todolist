@@ -29,7 +29,7 @@ export default function Input({
           className={`w-full h-[30px] flex-auto px-2 ${style}`}
           type={inputType}
           placeholder={placeholder}
-          value={inputValue}
+          value={inputValue || ''}
           {...register(inputName, { ...fieldoptions })}
         />
       </label>

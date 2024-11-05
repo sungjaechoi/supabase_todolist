@@ -28,6 +28,7 @@ export default function CategoryItem({
 }: Props) {
   const [isEditing, setIsEditing] = useState(false)
   const [isShowMore, setIsShowMore] = useState(false)
+  const [hasFocus, setHasFocus] = useState(false)
 
   useEffect(() => {
     const el = document.querySelector('#categoryEdit') as HTMLInputElement
@@ -110,13 +111,14 @@ export default function CategoryItem({
             className="w-full h-full flex justify-end items-center"
             onClick={() => {
               setIsShowMore((Prev) => !Prev)
+              setHasFocus(true)
             }}
           >
             <FiMoreVertical className="h-[20px] w-[20px]" />
           </button>
         </span>
       )}
-      {isShowMore && (
+      {isShowMore && hasFocus && (
         <div className="absolute right-[17px] top-0 flex flex-col items-center justify-center w-[60px] h-[60px] bg-gray-400 rounded-[8px]">
           <button
             type="button"
@@ -132,6 +134,9 @@ export default function CategoryItem({
           <button
             type="button"
             className="w-full h-full text-white border-t border-white"
+            onBlur={() => {
+              setHasFocus(false)
+            }}
             onClick={(e) => {
               setIsEditing(true)
               setIsShowMore(false)
