@@ -28,7 +28,7 @@ const CategoryContext = createContext<{
   isLoading: boolean
   categories: userCategory[]
   categoryNames: string[]
-  userId: string | undefined
+  userId: string
   isMenuOpen: boolean
   setIsMenuOpen: React.Dispatch<React.SetStateAction<boolean>>
   isModalOpen: boolean
@@ -132,6 +132,11 @@ export const CategoryProvider = ({ children }: { children: ReactNode }) => {
     if (deleteCategoryWithTodos) {
       const next = categories.filter((category) => category.id !== categoryId)
       setCategories(next)
+      const hasCategory = categoryNames.includes(categoryName)
+      if (hasCategory) {
+        const next = categoryNames.filter((c) => c !== categoryName)
+        setCategoryNames(next)
+      }
     }
   }
 
@@ -171,8 +176,8 @@ export const CategoryProvider = ({ children }: { children: ReactNode }) => {
     categoryId: string,
     category: string,
   ) => {
-    setIsModalOpen(true)
     const todos = await fetchGetTodos(userId, category)
+    setIsModalOpen(true)
     if (todos) {
       const next = {
         categoryId: categoryId,

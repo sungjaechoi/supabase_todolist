@@ -19,6 +19,7 @@ function LoginContent() {
   const isValidAuth = query.get('loginError') || ''
   const [isLoginLoading, setIsLoginLoading] = useState(false)
   const [isInstantLoginLoading, setIsInstantLoginLoading] = useState(false)
+  const [loginInput, setLoginInput] = useState({ id: '', password: '' })
 
   useEffect(() => {
     const isReload = query.get('isReload')
@@ -45,6 +46,9 @@ function LoginContent() {
             <input
               className="h-[30px] flex-auto px-2"
               placeholder="이메일을 입력해주세요"
+              onChange={(e) => {
+                setLoginInput({ ...loginInput, id: e.target.value })
+              }}
               id="email"
               name="email"
               type="email"
@@ -59,6 +63,9 @@ function LoginContent() {
             <input
               className="h-[30px] flex-auto px-2"
               placeholder="비밀번호"
+              onChange={(e) => {
+                setLoginInput({ ...loginInput, password: e.target.value })
+              }}
               id="password"
               name="password"
               type="password"
@@ -74,10 +81,12 @@ function LoginContent() {
             className="h-[40px] border border-gray-300 rounded-lg border-solid bg-white"
             formAction={login}
             onClick={() => {
-              setIsLoginLoading(true)
+              if (loginInput.id && loginInput.password) {
+                setIsLoginLoading(true)
+              }
             }}
           >
-            {isLoginLoading ? (
+            {isLoginLoading && !isValidAuth ? (
               <BeatLoader color="#cacaca" margin={4} size={8} />
             ) : (
               '로그인'
@@ -94,7 +103,7 @@ function LoginContent() {
             type="button"
             onClick={InstantLoginHandler}
           >
-            {isInstantLoginLoading ? (
+            {isInstantLoginLoading && !isValidAuth ? (
               <BeatLoader color="#cacaca" margin={4} size={8} />
             ) : (
               '즉시 로그인'

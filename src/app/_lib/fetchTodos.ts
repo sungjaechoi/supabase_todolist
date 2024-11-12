@@ -17,6 +17,7 @@ export async function fetchGetTodos(userId: string, categoryNames: string) {
     return todos
   } catch (error) {
     console.error('getTodosError:', error)
+    return []
   }
 }
 
@@ -41,7 +42,7 @@ export async function fetchCreateTodo(
 
     return todo
   } catch (error) {
-    console.error('fetchCreateTodoError:', error)
+    throw new Error('fetchCreateTodoError')
   }
 }
 
@@ -51,7 +52,6 @@ export async function fetchUpdateTodo(data: Prisma.todoUpdateInput) {
       method: 'PATCH',
       body: JSON.stringify(data),
     })
-
     if (!response.ok) {
       throw Error(`FetchError: ${response.status}`)
     }
@@ -62,7 +62,7 @@ export async function fetchUpdateTodo(data: Prisma.todoUpdateInput) {
 
     return todo
   } catch (error) {
-    console.error('fetchUpdateError:', error)
+    throw new Error('fetchUpdateError')
   }
 }
 
@@ -77,8 +77,8 @@ export async function fetchDeleteTodo(id: string) {
       throw Error(`FetchError: ${response.status}`)
     }
 
-    return response.ok
+    return id
   } catch (error) {
-    console.error('fetchDeleteTodoError:', error)
+    throw new Error('fetchDeleteTodoError')
   }
 }

@@ -3,7 +3,7 @@ import './globals.css'
 import localFont from 'next/font/local'
 import { UserProvider } from './_component/_contexts/userContext'
 import { CategoryProvider } from './_component/_contexts/categoryCntext'
-import { TodosProvider } from './_component/_contexts/todoContext'
+import QueryProviders from './_component/_queryProviders/QueryProviders'
 
 export const metadata: Metadata = {
   title: 'Create Next App',
@@ -26,9 +26,9 @@ export default function RootLayout({
     <html lang="en">
       <UserProvider>
         <CategoryProvider>
-          <TodosProvider>
+          <QueryProviders>
             <body className={pretendard.className}>{children}</body>
-          </TodosProvider>
+          </QueryProviders>
         </CategoryProvider>
       </UserProvider>
     </html>

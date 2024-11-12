@@ -28,6 +28,8 @@ export default function TodoItem({ todo, deleteTodo, updateTodo }: Props) {
   const [newText, setNewText] = useState(todo.text)
   const inputRef = useRef<HTMLInputElement>(null)
 
+  // useQuery로 초기 todo 상태를 가져오기
+
   const editHandler = () => {
     setIsEditing(true)
   }
@@ -52,8 +54,8 @@ export default function TodoItem({ todo, deleteTodo, updateTodo }: Props) {
 
   const formSubmitHandler: FormEventHandler<HTMLFormElement> = async (e) => {
     e.preventDefault()
-    const copy = JSON.parse(JSON.stringify(todo))
-    const next = { ...copy, text: newText, checked: copy.checked }
+    // const copy = JSON.parse(JSON.stringify(todo))
+    const next = { ...todo, text: newText, checked: todo.checked }
     await updateTodo(next)
     setIsEditing(false)
   }
@@ -64,16 +66,16 @@ export default function TodoItem({ todo, deleteTodo, updateTodo }: Props) {
     await updateTodo(next)
   }
 
+  const keyDownEnterlHandler: KeyboardEventHandler<HTMLInputElement> = (e) => {
+    if (e.key === 'Enter') {
+      toggleHandler()
+    }
+  }
+
   const keyDownCancelHandler: KeyboardEventHandler<HTMLInputElement> = (e) => {
     if (e.key === 'Escape') {
       // ESC 키가 눌렸을 때
       cancelHandler()
-    }
-  }
-
-  const keyDownEnterlHandler: KeyboardEventHandler<HTMLInputElement> = (e) => {
-    if (e.key === 'Enter') {
-      toggleHandler()
     }
   }
 

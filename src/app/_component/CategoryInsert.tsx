@@ -1,7 +1,6 @@
 'use client'
 
 import { FormValues } from '@/model/formValues'
-import { useState } from 'react'
 import { useForm, UseFormReturn } from 'react-hook-form'
 import Input from './Input'
 import InputErrorMessage from './InputErrorMessage'
@@ -20,18 +19,10 @@ export default function CategoryInsert({ createCategorie }: Props) {
     reset,
   }: UseFormReturn<FormValues> = useForm<FormValues>({ mode: 'onChange' })
 
-  const [isToogleState, setIsToogleState] = useState(false)
-
-  const toogleInputfield = () => {
-    setIsToogleState((prev) => !prev)
-  }
-
   const value = watch('categorieCreate')
-
   const onSubmit = () => {
     createCategorie(value)
     reset({ categorieCreate: '' })
-    setIsToogleState(false)
   }
 
   return (
@@ -47,6 +38,7 @@ export default function CategoryInsert({ createCategorie }: Props) {
               inputType="text"
               placeholder="카테고리를 입력하세요"
               register={register}
+              inputValue={value}
               fieldoptions={{
                 required: '카테고리를 입력하세요',
               }}
